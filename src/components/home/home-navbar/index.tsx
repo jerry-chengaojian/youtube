@@ -5,6 +5,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Input } from "@/components/ui/input";
 import { UserCircleIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AuthButton } from "./auth-button";
 
 export const HomeNavbar = () => {
   return (
@@ -26,15 +27,7 @@ export const HomeNavbar = () => {
           <Input className="pl-4 py-2 rounded-full" placeholder="Search" />
         </div>
 
-        <div className="flex-shrink-0 items-center flex gap-4">
-          <Button
-            variant="outline"
-            className="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-500 border-blue-500/20 rounded-full shadow-none"
-          >
-            <UserCircleIcon className="mr-2" />
-            Sign in
-          </Button>
-        </div>
+        <AuthButton />
       </div>
     </nav>
   );
