@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const AuthButton = () => {
   const { data: session } = useSession();
@@ -19,8 +20,16 @@ export const AuthButton = () => {
       {session ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="rounded-full">
-              <UserIcon className="size-4" />
+            <Button
+              variant="ghost"
+              className="rounded-full p-0 hover:bg-transparent"
+            >
+              <Avatar className="size-10 border-2 border-white">
+                <AvatarImage src="/avatar.jpg" />
+                <AvatarFallback className="bg-gray-300 text-gray-700 text-lg">
+                  {session?.user?.name?.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
