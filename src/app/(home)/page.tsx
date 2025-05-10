@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
+import { HomeView } from "@/components/home/views/home-view";
 
 export default function Home() {
-  return <div>video list</div>;
+  return <HomeView />;
 }
