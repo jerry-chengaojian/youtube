@@ -1,5 +1,12 @@
 import { HomeView } from "@/components/home/views/home-view";
 
-export default function Home() {
-  return <HomeView />;
+interface PageProps {
+  searchParams: Promise<{
+    categoryId?: string;
+  }>;
+}
+
+export default async function Home({ searchParams }: PageProps) {
+  const { categoryId } = await searchParams;
+  return <HomeView categoryId={categoryId} />;
 }
