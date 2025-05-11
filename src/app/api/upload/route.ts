@@ -1,5 +1,6 @@
-import { put } from "@vercel/blob";
 import { NextResponse } from "next/server";
+import { put } from "@vercel/blob";
+import { v4 as uuidv4 } from "uuid";
 
 export async function POST(request: Request) {
   try {
@@ -10,12 +11,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    // Convert File to Blob
-    const buffer = await file.arrayBuffer();
-    const blob = new Blob([buffer]);
+    // Extract file extension
+    const fileExtension = file.name.split(".").pop();
+    // Generate a unique filename using uuid and append the file extension
+    const uniqueFileName = `${uuidv4()}.${fileExtension}`;
 
-    // Upload to Vercel Blob
-    const { url } = await put(file.name, blob, {
+    // Create a ReadableStream from the file
+    const stream = file.stream();
+
+    // Upload to Vercel Blob using the stream
+    const { url } = await put(uniqueFileName, stream, {
       access: "public",
     });
 
