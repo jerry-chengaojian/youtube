@@ -1,4 +1,9 @@
-import { useInfiniteQuery, type InfiniteData } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  type InfiniteData,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { DEFAULT_LIMIT } from "@/constants";
 
 // Types for the API response
@@ -55,5 +60,31 @@ export function useVideos() {
     queryFn: ({ pageParam }) => getVideos(pageParam),
     getNextPageParam: (lastPage: VideosResponse) => lastPage.nextCursor,
     initialPageParam: undefined,
+  });
+}
+
+export function useSaveVideo() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (videoData: { videoUrl: string; duration: number }) => {
+      const response = await fetch("/api/videos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(videoData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save video");
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      // Invalidate the videos query to refetch the list after a successful save
+      queryClient.invalidateQueries({ queryKey: videosQueryKey });
+    },
   });
 }

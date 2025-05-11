@@ -6,11 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { useSaveVideo } from "@/hooks/use-videos";
 
 export const StudioUploader = ({ onSuccess }: { onSuccess: () => void }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [progress, setProgress] = useState(0);
+
+  const { mutate: saveVideo } = useSaveVideo();
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -91,27 +94,21 @@ export const StudioUploader = ({ onSuccess }: { onSuccess: () => void }) => {
       // Wait for the upload to complete
       const response = await uploadPromise;
 
-      // Save video to database
-      const saveResponse = await fetch("/api/videos", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      // Replace the save video logic with the mutation
+      saveVideo({ videoUrl: response.url, duration: duration }, {
+        onSuccess: () => {
+          toast.success("Video uploaded successfully!");
+          setProgress(100);
+          setIsUploading(false);
+          onSuccess();
         },
-        body: JSON.stringify({
-          videoUrl: response.url,
-          duration: duration,
-        }),
+        onError: (error) => {
+          console.error("Upload error:", error);
+          setIsUploading(false);
+          setProgress(0);
+          toast.error("Failed to upload video");
+        },
       });
-
-      if (!saveResponse.ok) {
-        throw new Error("Failed to save video");
-      }
-
-      await saveResponse.json();
-      toast.success("Video uploaded successfully!");
-      setProgress(100);
-      setIsUploading(false);
-      onSuccess();
     } catch (error) {
       console.error("Upload error:", error);
       setIsUploading(false);
