@@ -1,14 +1,8 @@
 "use client";
 
-import Link from "next/link";
-import { Suspense } from "react";
 import { format } from "date-fns";
 import { Globe2Icon, LockIcon } from "lucide-react";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import type { InfiniteData } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-
-import { DEFAULT_LIMIT } from "@/constants";
 import { snakeCaseToTitle } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { InfiniteScroll } from "@/components/ui/infinite-scroll";
@@ -21,29 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { VideoThumbnail } from "@/components/ui/video-thumbnail";
-
-// Types for the API response
-type Video = {
-  id: string;
-  title: string;
-  description: string | null;
-  thumbnailUrl: string;
-  previewUrl: string | null;
-  duration: number | null;
-  visibility: "public" | "private";
-  muxStatus: string | null;
-  createdAt: string;
-  viewCount: number;
-  commentCount: number;
-  likeCount: number;
-};
-
-type VideosResponse = {
-  items: Video[];
-  nextCursor: { id: string; updatedAt: string } | null;
-};
-
-type PageParam = { id: string; updatedAt: string } | undefined;
+import { useVideos } from "@/hooks/use-videos";
 
 export const VideosSection = () => {
   return <VideosSectionContent />;
@@ -59,36 +31,7 @@ const VideosSectionContent = () => {
     isError,
     error,
     isLoading,
-  } = useInfiniteQuery<
-    VideosResponse,
-    Error,
-    InfiniteData<VideosResponse>,
-    string[],
-    PageParam
-  >({
-    queryKey: ["studio-videos"],
-    queryFn: async ({ pageParam }) => {
-      const params: Record<string, string> = {
-        limit: String(DEFAULT_LIMIT),
-      };
-
-      if (pageParam) {
-        params.cursor = JSON.stringify(pageParam);
-      }
-
-      const searchParams = new URLSearchParams(params);
-      const response = await fetch(`/api/videos?${searchParams}`);
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch videos");
-      }
-
-      const data: VideosResponse = await response.json();
-      return data;
-    },
-    getNextPageParam: (lastPage: VideosResponse) => lastPage.nextCursor,
-    initialPageParam: undefined,
-  });
+  } = useVideos();
 
   if (isError) {
     return (
