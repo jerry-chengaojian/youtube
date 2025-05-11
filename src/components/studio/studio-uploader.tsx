@@ -45,6 +45,17 @@ export const StudioUploader = ({ onSuccess }: { onSuccess: () => void }) => {
     setProgress(0);
 
     try {
+      // Get video duration
+      const duration = await new Promise<number>((resolve) => {
+        const video = document.createElement("video");
+        video.preload = "metadata";
+        video.onloadedmetadata = () => {
+          resolve(Math.round(video.duration));
+          window.URL.revokeObjectURL(video.src);
+        };
+        video.src = URL.createObjectURL(file);
+      });
+
       const formData = new FormData();
       formData.append("file", file);
 
@@ -86,7 +97,10 @@ export const StudioUploader = ({ onSuccess }: { onSuccess: () => void }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ videoUrl: response.url }),
+        body: JSON.stringify({
+          videoUrl: response.url,
+          duration: duration,
+        }),
       });
 
       if (!saveResponse.ok) {

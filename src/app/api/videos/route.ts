@@ -22,7 +22,7 @@ export async function POST(req: Request) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { videoUrl } = await req.json();
+    const { videoUrl, duration } = await req.json();
 
     if (!videoUrl) {
       return new NextResponse("Video URL is required", { status: 400 });
@@ -35,6 +35,7 @@ export async function POST(req: Request) {
       data: {
         title: randomTitle,
         videoUrl,
+        duration,
         userId: session.user.id,
       },
     });
