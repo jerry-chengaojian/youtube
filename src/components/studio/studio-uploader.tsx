@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
-export const StudioUploader = () => {
+export const StudioUploader = ({ onSuccess }: { onSuccess: () => void }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -97,6 +97,7 @@ export const StudioUploader = () => {
       toast.success("Video uploaded successfully!");
       setProgress(100);
       setIsUploading(false);
+      onSuccess();
     } catch (error) {
       console.error("Upload error:", error);
       setIsUploading(false);

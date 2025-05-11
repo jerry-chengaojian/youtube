@@ -16,7 +16,7 @@ export const StudioUploadModal = () => {
         open={isModalOpen}
         onOpenChange={setIsModalOpen}
       >
-        <StudioUploader />
+        <StudioUploader onSuccess={() => setIsModalOpen(false)} />
       </ResponsiveModal>
       <Button
         variant="secondary"
