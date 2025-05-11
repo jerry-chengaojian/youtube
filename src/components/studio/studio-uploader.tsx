@@ -5,16 +5,9 @@ import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
-interface StudioUploaderProps {
-  endpoint?: string;
-  onSuccess: () => void;
-}
-
-export const StudioUploader = ({
-  endpoint = "/api/upload",
-  onSuccess,
-}: StudioUploaderProps) => {
+export const StudioUploader = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -47,7 +40,7 @@ export const StudioUploader = ({
   const handleUpload = async (files: File[]) => {
     if (!files.length) return;
 
-    const file = files[0]; // 只取第一个文件
+    const file = files[0]; // Only take the first file
     setIsUploading(true);
     setProgress(0);
 
@@ -57,7 +50,7 @@ export const StudioUploader = ({
 
       const xhr = new XMLHttpRequest();
 
-      // 处理上传进度
+      // Handle upload progress
       xhr.upload.onprogress = (event) => {
         if (event.lengthComputable) {
           const percentComplete = Math.round(
@@ -67,7 +60,7 @@ export const StudioUploader = ({
         }
       };
 
-      // 创建 Promise 来处理上传完成或失败
+      // Create a Promise to handle upload success or failure
       const uploadPromise = new Promise<{ url: string }>((resolve, reject) => {
         xhr.onload = () => {
           if (xhr.status === 200) {
@@ -80,22 +73,35 @@ export const StudioUploader = ({
         xhr.onerror = () => reject(new Error("Upload failed"));
       });
 
-      // 开始上传
+      // Start the upload
       xhr.open("POST", "/api/upload");
       xhr.send(formData);
 
-      // 等待上传完成
+      // Wait for the upload to complete
       const response = await uploadPromise;
-      console.log("Uploaded file URL:", response.url); // 打印返回的 URL
 
+      // Save video to database
+      const saveResponse = await fetch("/api/videos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ videoUrl: response.url }),
+      });
+
+      if (!saveResponse.ok) {
+        throw new Error("Failed to save video");
+      }
+
+      await saveResponse.json();
+      toast.success("Video uploaded successfully!");
       setProgress(100);
       setIsUploading(false);
-      onSuccess();
     } catch (error) {
       console.error("Upload error:", error);
       setIsUploading(false);
       setProgress(0);
-      // 这里可以添加错误提示 UI
+      toast.error("Failed to upload video");
     }
   };
 
@@ -127,7 +133,7 @@ export const StudioUploader = ({
           <p className="text-sm">
             {isUploading
               ? "Uploading..."
-              : "Drag and drop video files to upload"}
+              : "Drag and drop video file to upload"}
           </p>
           <p className="text-xs text-muted-foreground">
             Your videos will be private until you publish them
@@ -141,7 +147,7 @@ export const StudioUploader = ({
             disabled={isUploading}
             onClick={() => document.getElementById("file-upload")?.click()}
           >
-            Select files
+            Select file
           </Button>
           <input
             id="file-upload"

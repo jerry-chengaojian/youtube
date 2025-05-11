@@ -1,9 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { Loader2Icon, PlusIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { StudioUploader } from "./studio-uploader";
@@ -18,7 +16,7 @@ export const StudioUploadModal = () => {
         open={isModalOpen}
         onOpenChange={setIsModalOpen}
       >
-        <StudioUploader onSuccess={() => {}} />
+        <StudioUploader />
       </ResponsiveModal>
       <Button
         variant="secondary"
