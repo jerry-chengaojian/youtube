@@ -5,14 +5,12 @@ import { useState } from "react";
 
 interface VideoThumbnailProps {
   imageUrl: string;
-  previewUrl: string | null;
   title: string;
   duration: number;
 }
 
 export function VideoThumbnail({
   imageUrl,
-  previewUrl,
   title,
   duration,
 }: VideoThumbnailProps) {
@@ -38,22 +36,12 @@ export function VideoThumbnail({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {previewUrl && isHovered ? (
-        <video
-          src={previewUrl}
-          autoPlay
-          muted
-          loop
-          className="absolute inset-0 w-full h-full object-cover rounded-md"
-        />
-      ) : (
-        <Image
-          src={imageUrl}
-          alt={title}
-          fill
-          className="object-cover rounded-md"
-        />
-      )}
+      <Image
+        src={imageUrl || "/placeholder.svg"}
+        alt={title}
+        fill
+        className="object-cover rounded-md"
+      />
       <div className="absolute bottom-1 right-1 px-1 py-0.5 text-xs bg-black/80 text-white rounded">
         {formatDuration(duration)}
       </div>
