@@ -2,6 +2,7 @@
 
 import { ClapperboardIcon, UserCircleIcon, UserIcon } from "lucide-react";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +15,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const AuthButton = () => {
   const { data: session } = useSession();
+  const router = useRouter();
+
+  const handleStudioClick = () => {
+    router.push("/studio");
+  };
 
   return (
     <>
@@ -37,7 +43,7 @@ export const AuthButton = () => {
               <UserIcon className="mr-2 size-4" />
               <span>My profile</span>
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleStudioClick}>
               <ClapperboardIcon className="mr-2 size-4" />
               <span>Studio</span>
             </DropdownMenuItem>
