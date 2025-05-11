@@ -112,7 +112,6 @@ const VideosSectionContent = () => {
             <TableRow>
               <TableHead className="pl-6 w-[510px]">Video</TableHead>
               <TableHead>Visibility</TableHead>
-              <TableHead>Status</TableHead>
               <TableHead>Date</TableHead>
               <TableHead className="text-right">Views</TableHead>
               <TableHead className="text-right">Comments</TableHead>
@@ -155,11 +154,6 @@ const VideosSectionContent = () => {
                     {snakeCaseToTitle(video.visibility)}
                   </div>
                 </TableCell>
-                <TableCell>
-                  <div className="flex items-center">
-                    {snakeCaseToTitle(video.muxStatus || "error")}
-                  </div>
-                </TableCell>
                 <TableCell className="text-sm truncate">
                   {format(new Date(video.createdAt), "d MMM yyyy")}
                 </TableCell>
@@ -195,7 +189,6 @@ const VideosSectionSkeleton = () => {
           <TableRow>
             <TableHead className="pl-6 w-[510px]">Video</TableHead>
             <TableHead>Visibility</TableHead>
-            <TableHead>Status</TableHead>
             <TableHead>Date</TableHead>
             <TableHead className="text-right">Views</TableHead>
             <TableHead className="text-right">Comments</TableHead>
@@ -216,9 +209,6 @@ const VideosSectionSkeleton = () => {
               </TableCell>
               <TableCell>
                 <Skeleton className="h-4 w-20" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-4 w-16" />
               </TableCell>
               <TableCell>
                 <Skeleton className="h-4 w-24" />
