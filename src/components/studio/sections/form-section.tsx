@@ -1,0 +1,233 @@
+"use client";
+
+import {
+  MoreVerticalIcon,
+  CopyIcon,
+  CopyCheckIcon,
+  ImagePlusIcon,
+  SparklesIcon,
+  RotateCcwIcon,
+  Globe2Icon,
+  LockIcon,
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+interface FormSectionProps {
+  videoId: string;
+}
+
+export const FormSection = ({ videoId }: FormSectionProps) => {
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold">Video details</h1>
+          <p className="text-xs text-muted-foreground">
+            Manage your video details
+          </p>
+        </div>
+        <div className="flex items-center gap-x-2">
+          <Button type="submit">Save</Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <MoreVerticalIcon />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem>
+                <RotateCcwIcon className="size-4 mr-2" />
+                Revalidate
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <RotateCcwIcon className="size-4 mr-2" />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        {/* Left Column */}
+        <div className="space-y-8 lg:col-span-3">
+          <div>
+            <label className="block mb-2">
+              <div className="flex items-center gap-x-2">
+                Title
+                <Button
+                  size="icon"
+                  variant="outline"
+                  type="button"
+                  className="rounded-full size-6 [&_svg]:size-3"
+                >
+                  <SparklesIcon />
+                </Button>
+              </div>
+            </label>
+            <Input placeholder="Add a title to your video" />
+          </div>
+
+          <div>
+            <label className="block mb-2">
+              <div className="flex items-center gap-x-2">
+                Description
+                <Button
+                  size="icon"
+                  variant="outline"
+                  type="button"
+                  className="rounded-full size-6 [&_svg]:size-3"
+                >
+                  <SparklesIcon />
+                </Button>
+              </div>
+            </label>
+            <Textarea
+              rows={10}
+              className="resize-none pr-10"
+              placeholder="Add a description to your video"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-2">Thumbnail</label>
+            <div className="p-0.5 border border-dashed border-neutral-400 relative h-[84px] w-[153px] group">
+              <Image
+                src="/placeholder.jpg"
+                className="object-cover"
+                fill
+                alt="Thumbnail"
+              />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    type="button"
+                    size="icon"
+                    className="bg-black/50 hover:bg-black/50 absolute top-1 right-1 rounded-full opacity-100 md:opacity-0 group-hover:opacity-100 duration-300 size-7"
+                  >
+                    <MoreVerticalIcon className="text-white" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" side="right">
+                  <DropdownMenuItem>
+                    <ImagePlusIcon className="size-4 mr-1" />
+                    Change
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <SparklesIcon className="size-4 mr-1" />
+                    AI-generated
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <RotateCcwIcon className="size-4 mr-1" />
+                    Restore
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
+
+          <div>
+            <label className="block mb-2">Category</label>
+            <Select>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="gaming">Gaming</SelectItem>
+                <SelectItem value="music">Music</SelectItem>
+                <SelectItem value="education">Education</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {/* Right Column */}
+        <div className="flex flex-col gap-y-8 lg:col-span-2">
+          <div className="flex flex-col gap-4 bg-[#F9F9F9] rounded-xl overflow-hidden h-fit">
+            <div className="aspect-video overflow-hidden relative bg-gray-100" />
+            <div className="p-4 flex flex-col gap-y-6">
+              <div className="flex justify-between items-center gap-x-2">
+                <div className="flex flex-col gap-y-1">
+                  <p className="text-muted-foreground text-xs">Video link</p>
+                  <div className="flex items-center gap-x-2">
+                    <Link
+                      href="#"
+                      className="line-clamp-1 text-sm text-blue-500"
+                    >
+                      https://example.com/videos/123
+                    </Link>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="shrink-0"
+                    >
+                      <CopyIcon />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <div className="flex flex-col gap-y-1">
+                  <p className="text-muted-foreground text-xs">Video status</p>
+                  <p className="text-sm">Processing</p>
+                </div>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <div className="flex flex-col gap-y-1">
+                  <p className="text-muted-foreground text-xs">
+                    Subtitles status
+                  </p>
+                  <p className="text-sm">No Subtitles</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label className="block mb-2">Visibility</label>
+            <Select>
+              <SelectTrigger>
+                <SelectValue placeholder="Select visibility" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="public">
+                  <div className="flex items-center">
+                    <Globe2Icon className="size-4 mr-2" />
+                    Public
+                  </div>
+                </SelectItem>
+                <SelectItem value="private">
+                  <div className="flex items-center">
+                    <LockIcon className="size-4 mr-2" />
+                    Private
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
