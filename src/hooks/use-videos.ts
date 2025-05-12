@@ -3,6 +3,7 @@ import {
   type InfiniteData,
   useMutation,
   useQueryClient,
+  useQuery,
 } from "@tanstack/react-query";
 import { DEFAULT_LIMIT } from "@/constants";
 
@@ -84,6 +85,51 @@ export function useSaveVideo() {
     },
     onSuccess: () => {
       // Invalidate the videos query to refetch the list after a successful save
+      queryClient.invalidateQueries({ queryKey: videosQueryKey });
+    },
+  });
+}
+
+export function useVideo(videoId: string) {
+  return useQuery({
+    queryKey: ["video", videoId],
+    queryFn: async () => {
+      const response = await fetch(`/api/videos/${videoId}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch video");
+      }
+      return response.json();
+    },
+  });
+}
+
+export function useUpdateVideo(videoId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: {
+      title?: string;
+      description?: string;
+      thumbnailUrl?: string;
+      categoryId?: string;
+      visibility?: "public" | "private";
+    }) => {
+      const response = await fetch(`/api/videos/${videoId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update video");
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["video", videoId] });
       queryClient.invalidateQueries({ queryKey: videosQueryKey });
     },
   });

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   MoreVerticalIcon,
   CopyIcon,
@@ -12,6 +13,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,14 +31,53 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useVideo, useUpdateVideo } from "@/hooks/use-videos";
 
 interface FormSectionProps {
   videoId: string;
 }
 
 export const FormSection = ({ videoId }: FormSectionProps) => {
+  const { data: video, isLoading } = useVideo(videoId);
+  const { mutate: updateVideo } = useUpdateVideo(videoId);
+  const [copied, setCopied] = useState(false);
+
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+
+    updateVideo(
+      {
+        title: formData.get("title") as string,
+        description: formData.get("description") as string,
+        categoryId: formData.get("categoryId") as string,
+        visibility: formData.get("visibility") as "public" | "private",
+      },
+      {
+        onSuccess: () => {
+          toast.success("Changes saved successfully");
+        },
+        onError: () => {
+          toast.error("Failed to save changes");
+        },
+      }
+    );
+  };
+
+  const onCopy = () => {
+    navigator.clipboard.writeText(
+      `${window.location.origin}/videos/${videoId}`
+    );
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1000);
+  };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <div>
+    <form onSubmit={onSubmit}>
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold">Video details</h1>
@@ -83,7 +124,11 @@ export const FormSection = ({ videoId }: FormSectionProps) => {
                 </Button>
               </div>
             </label>
-            <Input placeholder="Add a title to your video" />
+            <Input
+              name="title"
+              defaultValue={video?.title}
+              placeholder="Add a title to your video"
+            />
           </div>
 
           <div>
@@ -101,6 +146,8 @@ export const FormSection = ({ videoId }: FormSectionProps) => {
               </div>
             </label>
             <Textarea
+              name="description"
+              defaultValue={video?.description || ""}
               rows={10}
               className="resize-none pr-10"
               placeholder="Add a description to your video"
@@ -111,7 +158,7 @@ export const FormSection = ({ videoId }: FormSectionProps) => {
             <label className="block mb-2">Thumbnail</label>
             <div className="p-0.5 border border-dashed border-neutral-400 relative h-[84px] w-[153px] group">
               <Image
-                src="/placeholder.jpg"
+                src={video?.thumbnailUrl || "/placeholder.svg"}
                 className="object-cover"
                 fill
                 alt="Thumbnail"
@@ -146,7 +193,7 @@ export const FormSection = ({ videoId }: FormSectionProps) => {
 
           <div>
             <label className="block mb-2">Category</label>
-            <Select>
+            <Select name="categoryId" defaultValue={video?.categoryId || ""}>
               <SelectTrigger>
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
@@ -162,25 +209,33 @@ export const FormSection = ({ videoId }: FormSectionProps) => {
         {/* Right Column */}
         <div className="flex flex-col gap-y-8 lg:col-span-2">
           <div className="flex flex-col gap-4 bg-[#F9F9F9] rounded-xl overflow-hidden h-fit">
-            <div className="aspect-video overflow-hidden relative bg-gray-100" />
+            <div className="aspect-video overflow-hidden relative bg-gray-100">
+              {video?.videoUrl && (
+                <video
+                  src={video.videoUrl}
+                  className="w-full h-full object-cover"
+                />
+              )}
+            </div>
             <div className="p-4 flex flex-col gap-y-6">
               <div className="flex justify-between items-center gap-x-2">
                 <div className="flex flex-col gap-y-1">
                   <p className="text-muted-foreground text-xs">Video link</p>
                   <div className="flex items-center gap-x-2">
                     <Link
-                      href="#"
+                      href={`/videos/${videoId}`}
                       className="line-clamp-1 text-sm text-blue-500"
                     >
-                      https://example.com/videos/123
+                      {`${window.location.origin}/videos/${videoId}`}
                     </Link>
                     <Button
                       type="button"
                       variant="ghost"
                       size="icon"
                       className="shrink-0"
+                      onClick={onCopy}
                     >
-                      <CopyIcon />
+                      {copied ? <CopyCheckIcon /> : <CopyIcon />}
                     </Button>
                   </div>
                 </div>
@@ -206,7 +261,10 @@ export const FormSection = ({ videoId }: FormSectionProps) => {
 
           <div>
             <label className="block mb-2">Visibility</label>
-            <Select>
+            <Select
+              name="visibility"
+              defaultValue={video?.visibility || "private"}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select visibility" />
               </SelectTrigger>
@@ -228,6 +286,6 @@ export const FormSection = ({ videoId }: FormSectionProps) => {
           </div>
         </div>
       </div>
-    </div>
+    </form>
   );
 };
