@@ -32,6 +32,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useVideo, useUpdateVideo } from "@/hooks/use-videos";
+import { useCategories } from "@/hooks/use-categories";
 
 interface FormSectionProps {
   videoId: string;
@@ -39,6 +40,7 @@ interface FormSectionProps {
 
 export const FormSection = ({ videoId }: FormSectionProps) => {
   const { data: video, isLoading } = useVideo(videoId);
+  const { data: categories, isLoading: isCategoriesLoading } = useCategories();
   const { mutate: updateVideo } = useUpdateVideo(videoId);
   const [copied, setCopied] = useState(false);
 
@@ -72,7 +74,7 @@ export const FormSection = ({ videoId }: FormSectionProps) => {
     setTimeout(() => setCopied(false), 1000);
   };
 
-  if (isLoading) {
+  if (isLoading || isCategoriesLoading) {
     return <div>Loading...</div>;
   }
 
@@ -198,9 +200,11 @@ export const FormSection = ({ videoId }: FormSectionProps) => {
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="gaming">Gaming</SelectItem>
-                <SelectItem value="music">Music</SelectItem>
-                <SelectItem value="education">Education</SelectItem>
+                {categories?.map((category) => (
+                  <SelectItem key={category.id} value={category.id}>
+                    {category.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
