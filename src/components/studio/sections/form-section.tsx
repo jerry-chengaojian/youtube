@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useVideo, useUpdateVideo } from "@/hooks/use-videos";
 import { useCategories } from "@/hooks/use-categories";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface FormSectionProps {
   videoId: string;
@@ -75,7 +76,7 @@ export const FormSection = ({ videoId }: FormSectionProps) => {
   };
 
   if (isLoading || isCategoriesLoading) {
-    return <div>Loading...</div>;
+    return <FormSectionSkeleton />;
   }
 
   return (
@@ -218,6 +219,9 @@ export const FormSection = ({ videoId }: FormSectionProps) => {
                 <video
                   src={video.videoUrl}
                   className="w-full h-full object-cover"
+                  controls
+                  autoPlay
+                  muted
                 />
               )}
             </div>
@@ -242,22 +246,6 @@ export const FormSection = ({ videoId }: FormSectionProps) => {
                       {copied ? <CopyCheckIcon /> : <CopyIcon />}
                     </Button>
                   </div>
-                </div>
-              </div>
-
-              <div className="flex justify-between items-center">
-                <div className="flex flex-col gap-y-1">
-                  <p className="text-muted-foreground text-xs">Video status</p>
-                  <p className="text-sm">Processing</p>
-                </div>
-              </div>
-
-              <div className="flex justify-between items-center">
-                <div className="flex flex-col gap-y-1">
-                  <p className="text-muted-foreground text-xs">
-                    Subtitles status
-                  </p>
-                  <p className="text-sm">No Subtitles</p>
                 </div>
               </div>
             </div>
@@ -291,5 +279,54 @@ export const FormSection = ({ videoId }: FormSectionProps) => {
         </div>
       </div>
     </form>
+  );
+};
+
+export const FormSectionSkeleton = () => {
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <div className="space-y-2">
+          <Skeleton className="h-7 w-32" />
+          <Skeleton className="h-4 w-40" />
+        </div>
+        <Skeleton className="h-9 w-24" />
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <div className="space-y-8 lg:col-span-3">
+          <div className="space-y-2">
+            <Skeleton className="h-5 w-16" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+          <div className="space-y-2">
+            <Skeleton className="h-5 w-24" />
+            <Skeleton className="h-[220px] w-full" />
+          </div>
+          <div className="space-y-2">
+            <Skeleton className="h-5 w-20" />
+            <Skeleton className="h-[84px] w-[153px]" />
+          </div>
+          <div className="space-y-2">
+            <Skeleton className="h-5 w-20" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+        </div>
+        <div className="flex flex-col gap-y-8 lg:col-span-2">
+          <div className="flex flex-col gap-4 bg-[#F9F9F9] rounded-xl overflow-hidden">
+            <Skeleton className="aspect-video" />
+            <div className="px-4 py-4 space-y-6">
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-20" />
+                <Skeleton className="h-5 w-full" />
+              </div>
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Skeleton className="h-5 w-20" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
