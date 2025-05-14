@@ -14,6 +14,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,20 +32,24 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useVideo, useUpdateVideo } from "@/hooks/use-videos";
+import { useVideo, useUpdateVideo, useDeleteVideo } from "@/hooks/use-videos";
 import { useCategories } from "@/hooks/use-categories";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { ThumbnailUploader } from "@/components/studio/thumbnail-uploader";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 interface FormSectionProps {
   videoId: string;
 }
 
 export const FormSection = ({ videoId }: FormSectionProps) => {
-  const { data: video, isLoading } = useVideo(videoId);
+  const router = useRouter();
+  const { data: video, isLoading, error } = useVideo(videoId);
   const { data: categories, isLoading: isCategoriesLoading } = useCategories();
   const { mutate: updateVideo } = useUpdateVideo(videoId);
+  const { mutate: deleteVideo } = useDeleteVideo(videoId);
   const [copied, setCopied] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
@@ -94,8 +99,35 @@ export const FormSection = ({ videoId }: FormSectionProps) => {
     );
   };
 
+  const handleDelete = () => {
+    deleteVideo(undefined, {
+      onSuccess: () => {
+        toast.success("Video deleted successfully");
+        router.push("/studio");
+      },
+      onError: (error) => {
+        console.error("Delete error:", error);
+        toast.error("Failed to delete video");
+      },
+    });
+  };
+
   if (isLoading || isCategoriesLoading) {
     return <FormSectionSkeleton />;
+  }
+
+  if (error) {
+    return (
+      <Alert variant="destructive">
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>Error</AlertTitle>
+        <AlertDescription>
+          {error instanceof Error
+            ? error.message
+            : "Failed to fetch video information. Please try again later."}
+        </AlertDescription>
+      </Alert>
+    );
   }
 
   return (
@@ -117,11 +149,7 @@ export const FormSection = ({ videoId }: FormSectionProps) => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem>
-                  <RotateCcwIcon className="size-4 mr-2" />
-                  Revalidate
-                </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={handleDelete}>
                   <RotateCcwIcon className="size-4 mr-2" />
                   Delete
                 </DropdownMenuItem>

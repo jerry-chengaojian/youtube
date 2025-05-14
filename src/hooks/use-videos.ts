@@ -134,3 +134,24 @@ export function useUpdateVideo(videoId: string) {
     },
   });
 }
+
+export function useDeleteVideo(videoId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      const response = await fetch(`/api/videos/${videoId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete video");
+      }
+
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["video", videoId] });
+      queryClient.invalidateQueries({ queryKey: videosQueryKey });
+    },
+  });
+}

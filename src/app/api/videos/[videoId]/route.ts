@@ -66,3 +66,26 @@ export async function PATCH(req: Request, { params }: PageProps) {
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
+
+export async function DELETE(req: Request, { params }: PageProps) {
+  try {
+    const session = await auth();
+
+    if (!session?.user?.id) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    const { videoId } = await params;
+    await prisma.video.delete({
+      where: {
+        id: videoId,
+        userId: session.user.id,
+      },
+    });
+
+    return new NextResponse(null, { status: 204 });
+  } catch (error) {
+    console.error("[VIDEO_DELETE]", error);
+    return new NextResponse("Internal Error", { status: 500 });
+  }
+}
