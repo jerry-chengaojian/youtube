@@ -66,7 +66,7 @@ const VideosSectionContent = () => {
               <TableRow
                 key={video.id}
                 className="cursor-pointer hover:bg-muted/50"
-                onClick={() => router.push(`/studio/videos/${video.id}`)}
+                onClick={() => router.push(`/studio/${video.id}`)}
               >
                 <TableCell className="pl-6">
                   <div className="flex items-center gap-4">

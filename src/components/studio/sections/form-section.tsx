@@ -203,14 +203,6 @@ export const FormSection = ({ videoId }: FormSectionProps) => {
                       <ImagePlusIcon className="size-4 mr-1" />
                       Change
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <SparklesIcon className="size-4 mr-1" />
-                      AI-generated
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <RotateCcwIcon className="size-4 mr-1" />
-                      Restore
-                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
