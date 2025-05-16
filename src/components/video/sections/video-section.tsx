@@ -1,11 +1,36 @@
 "use client";
 
 import { Skeleton } from "@/components/ui/skeleton";
-import { VideoTopRowSkeleton } from "../components/video-top-row";
+import { VideoTopRow, VideoTopRowSkeleton } from "../components/video-top-row";
+import { useVideo } from "@/hooks/use-videos";
 
 interface VideoSectionProps {
   videoId: string;
 }
+
+export const VideoSection = ({ videoId }: VideoSectionProps) => {
+  const { data: video, isLoading, error } = useVideo(videoId);
+
+  if (isLoading) return <VideoSectionSkeleton />;
+  if (error || !video) return <div>Error loading video</div>;
+
+  return (
+    <>
+      <div className="aspect-video bg-black rounded-xl overflow-hidden relative">
+        {
+          <video
+            src={video.videoUrl}
+            className="w-full h-full object-cover"
+            controls
+            poster={video.thumbnailUrl || undefined}
+            preload="metadata"
+          />
+        }
+      </div>
+      <VideoTopRow video={video} />
+    </>
+  );
+};
 
 export const VideoPlayerSkeleton = () => {
   return <Skeleton className="aspect-video rounded-xl" />;
@@ -18,23 +43,4 @@ export const VideoSectionSkeleton = () => {
       <VideoTopRowSkeleton />
     </>
   );
-};
-
-export const VideoSection = ({ videoId }: VideoSectionProps) => {
-  return <VideoSectionSkeleton />;
-
-  // return (
-  //   <>
-  //     <div className="aspect-video bg-black rounded-xl overflow-hidden relative">
-  //       <VideoPlayer
-  //         autoPlay
-  //         onPlay={handlePlay}
-  //         playbackId={video.muxPlaybackId}
-  //         thumbnailUrl={video.thumbnailUrl}
-  //       />
-  //     </div>
-  //     <VideoBanner status={video.muxStatus} />
-  //     <VideoTopRow video={video} />
-  //   </>
-  // )
 };

@@ -8,17 +8,25 @@ import {
 import { DEFAULT_LIMIT } from "@/constants";
 
 // Types for the API response
-type Video = {
+export interface Video {
   id: string;
   title: string;
   description: string | null;
-  thumbnailUrl: string;
-  duration: number | null;
+  videoUrl: string;
+  thumbnailUrl: string | null;
+  duration: number;
   visibility: "public" | "private";
   createdAt: string;
-  viewCount: number;
-  commentCount: number;
-  likeCount: number;
+  updatedAt: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+  };
+  category: {
+    id: string;
+    name: string;
+  } | null;
 };
 
 type VideosResponse = {
@@ -91,7 +99,7 @@ export function useSaveVideo() {
 }
 
 export function useVideo(videoId: string) {
-  return useQuery({
+  return useQuery<Video>({
     queryKey: ["video", videoId],
     queryFn: async () => {
       const response = await fetch(`/api/videos/${videoId}`);

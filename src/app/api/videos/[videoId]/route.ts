@@ -5,27 +5,29 @@ import { prisma } from "@/lib/prisma";
 interface PageProps {
   params: Promise<{ videoId: string }>;
 }
-export async function GET(req: Request, { params }: PageProps) {
+export async function GET(
+  request: Request,
+  { params }: { params: { videoId: string } }
+) {
   try {
-    const session = await auth();
+    const videoId = params.videoId;
 
-    if (!session?.user?.id) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
-
-    const { videoId } = await params;
     const video = await prisma.video.findUnique({
-      where: {
-        id: videoId,
-        userId: session.user.id,
-      },
+      where: { id: videoId },
       include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          }
+        },
         category: true,
       },
     });
 
     if (!video) {
-      return new NextResponse("Not found", { status: 404 });
+      return new NextResponse("Video not found", { status: 404 });
     }
 
     return NextResponse.json(video);
