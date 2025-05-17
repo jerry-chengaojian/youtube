@@ -1,24 +1,37 @@
-import { useState } from "react";
+"use client";
+
+import { useState, useMemo } from "react";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { useVideoViews } from "@/hooks/use-video-views";
 
 interface VideoDescriptionProps {
-  compactViews: string;
-  expandedViews: string;
+  videoId: string;
   compactDate: string;
   expandedDate: string;
   description?: string | null;
-};
+}
 
 export const VideoDescription = ({
-  compactViews,
-  expandedViews,
+  videoId,
   compactDate,
   expandedDate,
   description,
 }: VideoDescriptionProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { data } = useVideoViews(videoId);
+  const viewCount = data?.viewCount || 0;
+  const compactViews = useMemo(() => {
+    return Intl.NumberFormat("en", {
+      notation: "compact",
+    }).format(viewCount);
+  }, [viewCount]);
+  const expandedViews = useMemo(() => {
+    return Intl.NumberFormat("en", {
+      notation: "standard",
+    }).format(viewCount);
+  }, [viewCount]);
 
   return (
     <div
@@ -27,17 +40,17 @@ export const VideoDescription = ({
     >
       <div className="flex gap-2 text-sm mb-2">
         <span className="font-medium">
-          {isExpanded ? expandedViews : compactViews} views
+          {isExpanded ? expandedViews : compactViews}
         </span>
         <span className="font-medium">
           {isExpanded ? expandedDate : compactDate}
         </span>
       </div>
       <div className="relative">
-        <p 
+        <p
           className={cn(
             "text-sm whitespace-pre-wrap",
-            !isExpanded && "line-clamp-2",
+            !isExpanded && "line-clamp-2"
           )}
         >
           {description || "No description"}

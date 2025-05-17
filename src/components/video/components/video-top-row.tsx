@@ -12,10 +12,6 @@ interface VideoTopRowProps {
 }
 
 export const VideoTopRow = ({ video }: VideoTopRowProps) => {
-  // Mock formatted data
-  const compactViews = "1.2M";
-  const expandedViews = "1,234,567";
-
   const compactDate = useMemo(() => {
     return formatDistanceToNow(video.createdAt, { addSuffix: true });
   }, [video.createdAt]);
@@ -34,8 +30,7 @@ export const VideoTopRow = ({ video }: VideoTopRowProps) => {
         </div>
       </div>
       <VideoDescription
-        compactViews={compactViews}
-        expandedViews={expandedViews}
+        videoId={video.id}
         compactDate={compactDate}
         expandedDate={expandedDate}
         description={video.description}
