@@ -21,6 +21,7 @@ export interface Video {
   updatedAt: string;
   user: User;
   category: Category | null;
+  categoryId: string | null;
 };
 
 type VideosResponse = {
