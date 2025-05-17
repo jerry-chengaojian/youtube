@@ -10,7 +10,7 @@ export async function GET(
   { params }: { params: { videoId: string } }
 ) {
   try {
-    const videoId = params.videoId;
+    const { videoId } = await params;
 
     const video = await prisma.video.findUnique({
       where: { id: videoId },

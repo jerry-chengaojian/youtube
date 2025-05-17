@@ -1,21 +1,17 @@
-import { toast } from "sonner";
-import { useState } from "react";
-import {
-  ListPlusIcon,
-  MoreVerticalIcon,
-  ShareIcon,
-  Trash2Icon,
-} from "lucide-react";
-
-import { APP_URL } from "@/constants";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
+  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { PlaylistAddModal } from "@/modules/playlists/ui/components/playlist-add-modal";
+import {
+  MoreVerticalIcon,
+  ShareIcon,
+  ListPlusIcon,
+  Trash2Icon,
+} from "lucide-react";
+import { toast } from "sonner";
 
 interface VideoMenuProps {
   videoId: string;
@@ -23,29 +19,19 @@ interface VideoMenuProps {
   onRemove?: () => void;
 }
 
-export const VideoMenu = ({
-  videoId,
-  variant = "ghost",
-  onRemove,
-}: VideoMenuProps) => {
-  const [isOpenPlaylistAddModal, setIsOpenPlaylistAddModal] = useState(false);
-
+export const VideoMenu = ({ videoId, variant, onRemove }: VideoMenuProps) => {
   const onShare = () => {
-    const fullUrl = `${APP_URL}/videos/${videoId}`;
-    navigator.clipboard.writeText(fullUrl);
+    navigator.clipboard.writeText(
+      `${window.location.origin}/videos/${videoId}`
+    );
     toast.success("Link copied to the clipboard");
   };
 
   return (
     <>
-      <PlaylistAddModal
-        videoId={videoId}
-        open={isOpenPlaylistAddModal}
-        onOpenChange={setIsOpenPlaylistAddModal}
-      />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant={variant} size="icon" className="rounded-full">
+          <Button variant={"secondary"} size="icon" className="rounded-full">
             <MoreVerticalIcon />
           </Button>
         </DropdownMenuTrigger>
@@ -54,7 +40,7 @@ export const VideoMenu = ({
             <ShareIcon className="mr-2 size-4" />
             Share
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setIsOpenPlaylistAddModal(true)}>
+          <DropdownMenuItem onClick={() => {}}>
             <ListPlusIcon className="mr-2 size-4" />
             Add to playlist
           </DropdownMenuItem>

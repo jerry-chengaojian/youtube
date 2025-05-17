@@ -6,6 +6,7 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import { DEFAULT_LIMIT } from "@/constants";
+import { Category, User } from "@prisma/client";
 
 // Types for the API response
 export interface Video {
@@ -18,15 +19,8 @@ export interface Video {
   visibility: "public" | "private";
   createdAt: string;
   updatedAt: string;
-  user: {
-    id: string;
-    name: string;
-    email: string;
-  };
-  category: {
-    id: string;
-    name: string;
-  } | null;
+  user: User;
+  category: Category | null;
 };
 
 type VideosResponse = {
