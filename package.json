@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "prisma:generate": "prisma generate",
-    "prisma:db:push": "prisma db push --force-reset",
+    "prisma:db:push": "prisma db push",
     "prisma:studio": "prisma studio --port 3000",
     "prisma:seed": "tsx prisma/seed.ts"
   },

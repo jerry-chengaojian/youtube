@@ -18,6 +18,7 @@ model User {
   email String @unique
   password String
   videos    Video[]
+  videoViews VideoView[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -49,6 +50,19 @@ model Video {
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 
+  videoViews VideoView[]
+
   @@index([userId])
   @@index([categoryId])
+}
+
+model VideoView {
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  videoId    String
+  video      Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@id([userId, videoId])
 }
