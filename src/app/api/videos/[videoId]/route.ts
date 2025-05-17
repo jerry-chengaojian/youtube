@@ -7,7 +7,7 @@ interface PageProps {
 }
 export async function GET(
   request: Request,
-  { params }: { params: { videoId: string } }
+  { params }: { params: Promise<{ videoId: string }> }
 ) {
   try {
     const { videoId } = await params;

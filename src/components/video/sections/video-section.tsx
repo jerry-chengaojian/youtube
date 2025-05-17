@@ -3,6 +3,7 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { VideoTopRow, VideoTopRowSkeleton } from "../components/video-top-row";
 import { useVideo } from "@/hooks/use-videos";
+import { useCreateVideoView } from "@/hooks/use-video-views";
 
 interface VideoSectionProps {
   videoId: string;
@@ -10,6 +11,7 @@ interface VideoSectionProps {
 
 export const VideoSection = ({ videoId }: VideoSectionProps) => {
   const { data: video, isLoading, error } = useVideo(videoId);
+  const { mutate: createVideoView } = useCreateVideoView(videoId);
 
   if (isLoading) return <VideoSectionSkeleton />;
   if (error || !video) return <div>Error loading video</div>;
@@ -24,6 +26,7 @@ export const VideoSection = ({ videoId }: VideoSectionProps) => {
             controls
             poster={video.thumbnailUrl || undefined}
             preload="metadata"
+            onPlay={() => createVideoView()}
           />
         }
       </div>
