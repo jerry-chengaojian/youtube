@@ -6,7 +6,11 @@ import { User } from "@prisma/client";
 import { UserAvatar } from "@/components/ui/user-avatar";
 import { UserInfo } from "./user-info";
 import { SubscriptionButton } from "./subscription-button";
-import { useSubscriberCount } from "@/hooks/use-subscribers";
+import {
+  useSubscriberCount,
+  useToggleSubscription,
+} from "@/hooks/use-subscribers";
+import { toast } from "sonner";
 
 interface VideoOwnerProps {
   user: User;
@@ -17,6 +21,22 @@ export const VideoOwner = ({ user, videoId }: VideoOwnerProps) => {
   const { data: session, status } = useSession();
   const userId = session?.user?.id;
   const { data: subscriberData, isLoading } = useSubscriberCount(user.id);
+  const { mutate: toggleSubscription } = useToggleSubscription(user.id);
+
+  const handleSubscription = () => {
+    toggleSubscription(subscriberData?.isSubscribed || false, {
+      onSuccess: () => {
+        toast.success(
+          subscriberData?.isSubscribed
+            ? "You have unsubscribed"
+            : "You have subscribed"
+        );
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    });
+  };
 
   return (
     <div className="flex items-center sm:items-start justify-between sm:justify-start gap-3 min-w-0">
@@ -31,20 +51,12 @@ export const VideoOwner = ({ user, videoId }: VideoOwnerProps) => {
           </div>
         </div>
       </Link>
-      {userId === user.id ? (
-        <Button variant="secondary" className="rounded-full" asChild>
-          <Link prefetch href={`/studio/${videoId}`}>
-            Edit video
-          </Link>
-        </Button>
-      ) : (
-        <SubscriptionButton
-          onClick={() => {}}
-          disabled={isLoading}
-          isSubscribed={subscriberData?.isSubscribed || false}
-          className="flex-none"
-        />
-      )}
+      <SubscriptionButton
+        onClick={handleSubscription}
+        disabled={isLoading}
+        isSubscribed={subscriberData?.isSubscribed || false}
+        className="flex-none"
+      />
     </div>
   );
 };
