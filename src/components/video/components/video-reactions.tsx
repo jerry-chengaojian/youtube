@@ -7,6 +7,7 @@ import {
   useLikeVideo,
   useDislikeVideo,
 } from "@/hooks/use-video-reactions";
+import { toast } from "sonner";
 
 interface VideoReactionsProps {
   videoId: string;
@@ -18,11 +19,25 @@ export const VideoReactions = ({ videoId }: VideoReactionsProps) => {
   const { mutate: dislikeVideo } = useDislikeVideo(videoId);
 
   const handleLike = () => {
-    likeVideo();
+    likeVideo(undefined, {
+      onSuccess: () => {
+        toast.success("You liked this video");
+      },
+      onError: () => {
+        toast.error("Failed to like video");
+      },
+    });
   };
 
   const handleDislike = () => {
-    dislikeVideo();
+    dislikeVideo(undefined, {
+      onSuccess: () => {
+        toast.success("You disliked this video");
+      },
+      onError: () => {
+        toast.error("Failed to dislike video");
+      },
+    });
   };
 
   return (
