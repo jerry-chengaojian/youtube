@@ -51,12 +51,20 @@ export const VideoOwner = ({ user, videoId }: VideoOwnerProps) => {
           </div>
         </div>
       </Link>
-      <SubscriptionButton
-        onClick={handleSubscription}
-        disabled={isLoading}
-        isSubscribed={subscriberData?.isSubscribed || false}
-        className="flex-none"
-      />
+      {userId === user.id ? (
+        <Button variant="secondary" className="rounded-full" asChild>
+          <Link prefetch href={`/studio/videos/${videoId}`}>
+            Edit video
+          </Link>
+        </Button>
+      ) : (
+        <SubscriptionButton
+          onClick={handleSubscription}
+          disabled={isLoading}
+          isSubscribed={subscriberData?.isSubscribed || false}
+          className="flex-none"
+        />
+      )}
     </div>
   );
 };
