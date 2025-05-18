@@ -14,12 +14,14 @@ enum VideoVisibility {
 
 model User {
   id        String   @id @default(uuid())
-  name  String
-  email String @unique
-  password String
+  name      String
+  email     String @unique
+  password  String
   videos    Video[]
   videoViews VideoView[]
   videoReactions VideoReaction[]
+  subscriptions Subscription[] @relation("subscriptions_viewer")
+  subscribers Subscription[] @relation("subscriptions_creator")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -84,4 +86,15 @@ model VideoReaction {
   updatedAt  DateTime @updatedAt
 
   @@id([userId, videoId])
+}
+
+model Subscription {
+  viewerId  String
+  viewer    User     @relation(fields: [viewerId], references: [id], onDelete: Cascade, name: "subscriptions_viewer")
+  creatorId String
+  creator   User     @relation(fields: [creatorId], references: [id], onDelete: Cascade, name: "subscriptions_creator")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([viewerId, creatorId])
 }
