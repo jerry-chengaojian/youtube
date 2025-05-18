@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 
 interface SubscriberCountResponse {
   count: number;
+  isSubscribed: boolean;
 }
 
 export function useSubscriberCount(userId: string) {
