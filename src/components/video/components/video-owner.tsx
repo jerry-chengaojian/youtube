@@ -6,6 +6,7 @@ import { User } from "@prisma/client";
 import { UserAvatar } from "@/components/ui/user-avatar";
 import { UserInfo } from "./user-info";
 import { SubscriptionButton } from "./subscription-button";
+import { useSubscriberCount } from "@/hooks/use-subscribers";
 
 interface VideoOwnerProps {
   user: User;
@@ -15,6 +16,7 @@ interface VideoOwnerProps {
 export const VideoOwner = ({ user, videoId }: VideoOwnerProps) => {
   const { data: session, status } = useSession();
   const userId = session?.user?.id;
+  const { data: subscriberData } = useSubscriberCount(user.id);
 
   return (
     <div className="flex items-center sm:items-start justify-between sm:justify-start gap-3 min-w-0">
@@ -24,7 +26,7 @@ export const VideoOwner = ({ user, videoId }: VideoOwnerProps) => {
           <div className="flex flex-col gap-1 min-w-0">
             <UserInfo size="lg" name={user.name} />
             <span className="text-sm text-muted-foreground line-clamp-1">
-              {10} subscribers
+              {subscriberData?.count || 0} subscribers
             </span>
           </div>
         </div>
