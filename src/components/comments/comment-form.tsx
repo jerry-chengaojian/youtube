@@ -12,11 +12,10 @@ import {
 } from "@/components/ui/form";
 import { UserAvatar } from "../ui/user-avatar";
 
-const commentInsertSchema = z.object({
+const commentSchema = z.object({
   parentId: z.string().optional(),
   videoId: z.string(),
   value: z.string().min(1, "Comment cannot be empty"),
-  userId: z.string(), // 虽然表单中省略了这个字段，但在提交时需要
 });
 
 interface CommentFormProps {
@@ -27,6 +26,8 @@ interface CommentFormProps {
   variant?: "comment" | "reply";
 }
 
+import { useCreateComment } from "@/hooks/use-comments";
+
 export const CommentForm = ({
   videoId,
   parentId,
@@ -34,8 +35,9 @@ export const CommentForm = ({
   onSuccess,
   variant = "comment",
 }: CommentFormProps) => {
-  const form = useForm<z.infer<typeof commentInsertSchema>>({
-    resolver: zodResolver(commentInsertSchema),
+  const { mutate: createComment } = useCreateComment();
+  const form = useForm<z.infer<typeof commentSchema>>({
+    resolver: zodResolver(commentSchema),
     defaultValues: {
       parentId: parentId,
       videoId: videoId,
@@ -43,10 +45,13 @@ export const CommentForm = ({
     },
   });
 
-  const handleSubmit = (values: z.infer<typeof commentInsertSchema>) => {
-    // TODO: 实现提交逻辑
-    console.log(values);
-    onSuccess?.();
+  const handleSubmit = (values: z.infer<typeof commentSchema>) => {
+    createComment(values, {
+      onSuccess: () => {
+        form.reset();
+        onSuccess?.();
+      },
+    });
   };
 
   const handleCancel = () => {
