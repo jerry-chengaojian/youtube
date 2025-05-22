@@ -41,16 +41,7 @@ export const CommentsSection = ({ videoId }: CommentsSectionProps) => {
             <CommentItem
               key={comment.id}
               comment={{
-                id: comment.id,
-                userId: comment.userId,
-                user: {
-                  clerkId: comment.user.id,
-                  name: comment.user.name || "Anonymous",
-                  imageUrl: "/avatar.jpg",
-                },
-                value: comment.value,
-                createdAt: new Date(comment.createdAt),
-                videoId: comment.videoId,
+                ...comment,
                 likeCount: 0,
                 dislikeCount: 0,
                 replyCount: comment.replies?.length || 0,

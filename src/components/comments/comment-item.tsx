@@ -24,54 +24,23 @@ import {
 
 import { CommentForm } from "./comment-form";
 import { CommentReplies } from "./comment-replies";
+import { CommentWithRelations } from "@/hooks/use-comments";
+import { useSession } from "next-auth/react";
 
-interface CommentUser {
-  clerkId: string;
-  name: string;
-  imageUrl: string;
-}
-
-interface CommentItem {
-  id: string;
-  userId: string;
-  user: CommentUser;
-  value: string;
-  createdAt: Date;
-  videoId: string;
+interface Comment extends CommentWithRelations {
+  viewerReaction: "like" | "dislike" | null;
   likeCount: number;
   dislikeCount: number;
   replyCount: number;
-  viewerReaction: "like" | "dislike" | null;
-}
-
-interface CommentsGetManyOutput {
-  items: CommentItem[];
 }
 
 interface CommentItemProps {
-  comment?: CommentsGetManyOutput["items"][number];
+  comment: Comment;
   variant?: "reply" | "comment";
 }
 
-export const CommentItem = ({
-  comment = {
-    id: "mock-id",
-    userId: "mock-user-id",
-    user: {
-      clerkId: "mock-clerk-id",
-      name: "Mock User",
-      imageUrl: "/mock-avatar.jpg",
-    },
-    value: "This is a mock comment",
-    createdAt: new Date(),
-    videoId: "mock-video-id",
-    likeCount: 0,
-    dislikeCount: 0,
-    replyCount: 0,
-    viewerReaction: null,
-  },
-  variant = "comment",
-}: CommentItemProps) => {
+export const CommentItem = ({ comment, variant = "comment" }: CommentItemProps) => {
+  const { data: session } = useSession();
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const [isRepliesOpen, setIsRepliesOpen] = useState(false);
 
@@ -93,7 +62,7 @@ export const CommentItem = ({
         <Link prefetch href={`/users/${comment.userId}`}>
           <UserAvatar
             size={variant === "comment" ? "lg" : "sm"}
-            imageUrl={comment.user.imageUrl}
+            imageUrl={"/avatar.jpg"}
             name={comment.user.name}
           />
         </Link>
@@ -167,7 +136,7 @@ export const CommentItem = ({
               <MessageSquareIcon className="size-4" />
               Reply
             </DropdownMenuItem>
-            {comment.user.clerkId === "mock-clerk-id" && (
+            {comment.user.id === session?.user?.id && (
               <DropdownMenuItem onClick={handleDelete}>
                 <Trash2Icon className="size-4" />
                 Delete
