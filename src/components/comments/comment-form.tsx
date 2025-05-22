@@ -11,6 +11,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { UserAvatar } from "../ui/user-avatar";
+import { toast } from "sonner";
 
 const commentSchema = z.object({
   parentId: z.string().optional(),
@@ -49,7 +50,11 @@ export const CommentForm = ({
     createComment(values, {
       onSuccess: () => {
         form.reset();
+        toast.success(variant === "reply" ? "Reply posted" : "Comment posted");
         onSuccess?.();
+      },
+      onError: () => {
+        toast.error("Failed to post comment");
       },
     });
   };
