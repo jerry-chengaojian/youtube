@@ -1,44 +1,14 @@
-import { CornerDownRightIcon, Loader2Icon } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Loader2Icon } from "lucide-react";
 import { CommentItem } from "./comment-item";
+import { useCommentReplies } from "@/hooks/use-comments";
 
 interface CommentRepliesProps {
-  parentId: string;
   videoId: string;
+  parentId: string;
 }
 
-export const CommentReplies = ({ parentId, videoId }: CommentRepliesProps) => {
-  const isLoading = false;
-  const isFetchingNextPage = false;
-  const hasNextPage = false;
-
-  const fetchNextPage = () => {
-    // 空方法
-  };
-
-  // 假数据
-  const mockComments = [
-    {
-      id: "1",
-      content: "示例回复评论1",
-      createdAt: new Date(),
-      user: {
-        id: "user1",
-        name: "用户1",
-        image: null,
-      },
-    },
-    {
-      id: "2",
-      content: "示例回复评论2",
-      createdAt: new Date(),
-      user: {
-        id: "user2",
-        name: "用户2",
-        image: null,
-      },
-    },
-  ];
+export const CommentReplies = ({ videoId, parentId }: CommentRepliesProps) => {
+  const { data: replies, isLoading } = useCommentReplies(videoId, parentId);
 
   return (
     <div className="pl-14">
@@ -49,21 +19,20 @@ export const CommentReplies = ({ parentId, videoId }: CommentRepliesProps) => {
           </div>
         )}
         {!isLoading &&
-          mockComments.map((comment) => (
-            <CommentItem key={comment.id} variant="reply" />
+          replies?.map((comment) => (
+            <CommentItem
+              key={comment.id}
+              variant="reply"
+              comment={{
+                ...comment,
+                likeCount: 0,
+                dislikeCount: 0,
+                replyCount: comment.replies?.length || 0,
+                viewerReaction: null,
+              }}
+            />
           ))}
       </div>
-      {hasNextPage && (
-        <Button
-          variant="tertiary"
-          size="sm"
-          onClick={fetchNextPage}
-          disabled={isFetchingNextPage}
-        >
-          <CornerDownRightIcon />
-          Show more replies
-        </Button>
-      )}
     </div>
   );
 };

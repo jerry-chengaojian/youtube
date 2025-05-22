@@ -19,6 +19,29 @@ async function getComments(videoId: string): Promise<CommentWithRelations[]> {
   return response.json();
 }
 
+export const commentRepliesQueryKey = (videoId: string, parentId: string) =>
+  ["comment-replies", videoId, parentId] as const;
+
+async function getCommentReplies(
+  videoId: string,
+  parentId: string
+): Promise<CommentWithRelations[]> {
+  const response = await fetch(
+    `/api/videos/${videoId}/comments/${parentId}/replies`
+  );
+  if (!response.ok) {
+    throw new Error("Failed to fetch comment replies");
+  }
+  return response.json();
+}
+
+export function useCommentReplies(videoId: string, parentId: string) {
+  return useQuery<CommentWithRelations[]>({
+    queryKey: commentRepliesQueryKey(videoId, parentId),
+    queryFn: () => getCommentReplies(videoId, parentId),
+  });
+}
+
 export function useComments(videoId: string) {
   return useQuery<CommentWithRelations[]>({
     queryKey: commentsQueryKey(videoId),
