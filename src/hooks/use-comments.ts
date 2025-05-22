@@ -74,6 +74,13 @@ export function useCreateComment() {
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: commentsQueryKey(variables.videoId) });
+      variables.parentId &&
+        queryClient.invalidateQueries({
+          queryKey: commentRepliesQueryKey(
+            variables.videoId,
+            variables.parentId
+          ),
+        });
     },
   });
 }

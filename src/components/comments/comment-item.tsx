@@ -132,10 +132,12 @@ export const CommentItem = ({ comment, variant = "comment" }: CommentItemProps) 
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => setIsReplyOpen(true)}>
-              <MessageSquareIcon className="size-4" />
-              Reply
-            </DropdownMenuItem>
+            {variant === "comment" && (
+              <DropdownMenuItem onClick={() => setIsReplyOpen(true)}>
+                <MessageSquareIcon className="size-4" />
+                Reply
+              </DropdownMenuItem>
+            )}
             {comment.user.id === session?.user?.id && (
               <DropdownMenuItem onClick={handleDelete}>
                 <Trash2Icon className="size-4" />
