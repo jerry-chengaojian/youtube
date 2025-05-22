@@ -22,6 +22,7 @@ model User {
   videoReactions VideoReaction[]
   subscriptions Subscription[] @relation("subscriptions_viewer")
   subscribers Subscription[] @relation("subscriptions_creator")
+  comments Comment[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -55,6 +56,7 @@ model Video {
 
   videoViews VideoView[]
   videoReactions VideoReaction[]
+  comments Comment[]
 
   @@index([userId])
   @@index([categoryId])
@@ -97,4 +99,23 @@ model Subscription {
   updatedAt DateTime @updatedAt
 
   @@id([viewerId, creatorId])
+}
+
+
+model Comment {
+  id        String   @id @default(uuid())
+  parentId  String?
+  parent    Comment? @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  videoId   String
+  video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  value     String
+  replies   Comment[] @relation("CommentReplies")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([videoId])
+  @@index([parentId])
 }
