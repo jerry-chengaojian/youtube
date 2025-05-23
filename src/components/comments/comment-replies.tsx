@@ -20,17 +20,7 @@ export const CommentReplies = ({ videoId, parentId }: CommentRepliesProps) => {
         )}
         {!isLoading &&
           replies?.map((comment) => (
-            <CommentItem
-              key={comment.id}
-              variant="reply"
-              comment={{
-                ...comment,
-                likeCount: 0,
-                dislikeCount: 0,
-                replyCount: comment.replies?.length || 0,
-                viewerReaction: null,
-              }}
-            />
+            <CommentItem key={comment.id} variant="reply" comment={comment} />
           ))}
       </div>
     </div>
