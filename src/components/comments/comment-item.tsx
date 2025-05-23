@@ -26,6 +26,10 @@ import { CommentForm } from "./comment-form";
 import { CommentReplies } from "./comment-replies";
 import { CommentWithRelations } from "@/hooks/use-comments";
 import { useSession } from "next-auth/react";
+import {
+  useDislikeComment,
+  useLikeComment,
+} from "@/hooks/use-comment-reactions";
 
 interface Comment extends CommentWithRelations {
   viewerReaction: "like" | "dislike" | null;
@@ -39,17 +43,44 @@ interface CommentItemProps {
   variant?: "reply" | "comment";
 }
 
-export const CommentItem = ({ comment, variant = "comment" }: CommentItemProps) => {
+export const CommentItem = ({
+  comment,
+  variant = "comment",
+}: CommentItemProps) => {
   const { data: session } = useSession();
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const [isRepliesOpen, setIsRepliesOpen] = useState(false);
+  const { mutate: likeComment } = useLikeComment(
+    comment.videoId,
+    comment.id,
+    comment.parentId
+  );
+  const { mutate: dislikeComment } = useDislikeComment(
+    comment.videoId,
+    comment.id,
+    comment.parentId
+  );
 
   const handleLike = () => {
-    console.log("Like clicked");
+    likeComment(undefined, {
+      onSuccess: () => {
+        toast.success("You liked this comment");
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    });
   };
 
   const handleDislike = () => {
-    console.log("Dislike clicked");
+    dislikeComment(undefined, {
+      onSuccess: () => {
+        toast.success("You disliked this comment");
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    });
   };
 
   const handleDelete = () => {
