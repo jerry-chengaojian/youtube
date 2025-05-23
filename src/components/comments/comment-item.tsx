@@ -24,7 +24,7 @@ import {
 
 import { CommentForm } from "./comment-form";
 import { CommentReplies } from "./comment-replies";
-import { CommentWithRelations } from "@/hooks/use-comments";
+import { CommentWithRelations, useDeleteComment } from "@/hooks/use-comments";
 import { useSession } from "next-auth/react";
 import {
   useDislikeComment,
@@ -83,8 +83,24 @@ export const CommentItem = ({
     });
   };
 
+  const { mutate: deleteComment } = useDeleteComment();
+
   const handleDelete = () => {
-    console.log("Delete clicked");
+    deleteComment(
+      {
+        videoId: comment.videoId,
+        commentId: comment.id,
+        parentId: comment.parentId || undefined,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Comment deleted successfully");
+        },
+        onError: (error) => {
+          toast.error(error.message);
+        },
+      }
+    );
   };
 
   return (

@@ -84,3 +84,38 @@ export function useCreateComment() {
     },
   });
 }
+
+export function useDeleteComment() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (commentData: {
+      videoId: string;
+      commentId: string;
+      parentId?: string;
+    }) => {
+      const response = await fetch(`/api/comments/${commentData.commentId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete comment");
+      }
+
+      return response.json();
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: commentsQueryKey(variables.videoId),
+      });
+      if (variables.parentId) {
+        queryClient.invalidateQueries({
+          queryKey: commentRepliesQueryKey(
+            variables.videoId,
+            variables.parentId
+          ),
+        });
+      }
+    },
+  });
+}
