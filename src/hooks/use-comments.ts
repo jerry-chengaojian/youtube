@@ -1,17 +1,25 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Comment, User } from "@prisma/client";
+import { Comment, User, ReactionType } from "@prisma/client";
 
 export const commentsQueryKey = (videoId: string) =>
   ["comments", videoId] as const;
 
 export interface CommentWithRelations extends Comment {
   user: User;
-  replies: Comment[];
+  replyCount: number;
+  likes: number;
+  dislikes: number;
+  viewerReaction: ReactionType | null;
 }
 
-async function getComments(videoId: string): Promise<CommentWithRelations[]> {
+export interface CommentsResponse {
+  totalComments: number;
+  comments: CommentWithRelations[];
+}
+
+async function getComments(videoId: string): Promise<CommentsResponse> {
   const response = await fetch(`/api/videos/${videoId}/comments`);
   if (!response.ok) {
     throw new Error("Failed to fetch comments");
@@ -43,7 +51,7 @@ export function useCommentReplies(videoId: string, parentId: string) {
 }
 
 export function useComments(videoId: string) {
-  return useQuery<CommentWithRelations[]>({
+  return useQuery<CommentsResponse>({
     queryKey: commentsQueryKey(videoId),
     queryFn: () => getComments(videoId),
   });

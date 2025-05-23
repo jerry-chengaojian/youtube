@@ -39,7 +39,7 @@ interface Comment extends CommentWithRelations {
 }
 
 interface CommentItemProps {
-  comment: Comment;
+  comment: CommentWithRelations;
   variant?: "reply" | "comment";
 }
 
@@ -142,7 +142,7 @@ export const CommentItem = ({
                 />
               </Button>
               <span className="text-xs text-muted-foreground">
-                {comment.likeCount}
+                {comment.likes}
               </span>
               <Button
                 variant="ghost"
@@ -157,7 +157,7 @@ export const CommentItem = ({
                 />
               </Button>
               <span className="text-xs text-muted-foreground">
-                {comment.dislikeCount}
+                {comment.dislikes}
               </span>
             </div>
             {variant === "comment" && (

@@ -10,7 +10,7 @@ interface CommentsSectionProps {
 }
 
 export const CommentsSection = ({ videoId }: CommentsSectionProps) => {
-  const { data: comments, isLoading, error } = useComments(videoId);
+  const { data, isLoading, error } = useComments(videoId);
 
   if (isLoading) {
     return <CommentsSectionSkeleton />;
@@ -29,20 +29,13 @@ export const CommentsSection = ({ videoId }: CommentsSectionProps) => {
   return (
     <div className="mt-6">
       <div className="flex flex-col gap-6">
-        <h1 className="text-xl font-bold">{comments?.length || 0} Comments</h1>
+        <h1 className="text-xl font-bold">
+          {data?.totalComments || 0} Comments
+        </h1>
         <CommentForm videoId={videoId} />
         <div className="flex flex-col gap-4 mt-2">
-          {comments?.map((comment) => (
-            <CommentItem
-              key={comment.id}
-              comment={{
-                ...comment,
-                likeCount: 0,
-                dislikeCount: 0,
-                replyCount: comment.replies?.length || 0,
-                viewerReaction: null,
-              }}
-            />
+          {data?.comments.map((comment) => (
+            <CommentItem key={comment.id} comment={comment} />
           ))}
         </div>
       </div>
