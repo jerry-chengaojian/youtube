@@ -10,7 +10,14 @@ interface CommentsSectionProps {
 }
 
 export const CommentsSection = ({ videoId }: CommentsSectionProps) => {
-  const { data, isLoading, error } = useComments(videoId);
+  const {
+    data,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useComments(videoId);
 
   if (isLoading) {
     return <CommentsSectionSkeleton />;
@@ -26,18 +33,28 @@ export const CommentsSection = ({ videoId }: CommentsSectionProps) => {
     );
   }
 
+  const comments = data?.pages.flatMap((page) => page.items) ?? [];
+  const totalComments = data?.pages[0]?.totalComments ?? 0;
+
   return (
     <div className="mt-6">
       <div className="flex flex-col gap-6">
-        <h1 className="text-xl font-bold">
-          {data?.totalComments || 0} Comments
-        </h1>
+        <h1 className="text-xl font-bold">{totalComments} Comments</h1>
         <CommentForm videoId={videoId} />
         <div className="flex flex-col gap-4 mt-2">
-          {data?.comments.map((comment) => (
+          {comments.map((comment) => (
             <CommentItem key={comment.id} comment={comment} />
           ))}
+          {isFetchingNextPage && <CommentsSectionSkeleton />}
         </div>
+        {hasNextPage && !isFetchingNextPage && (
+          <button
+            onClick={() => fetchNextPage()}
+            className="text-sm text-muted-foreground hover:text-foreground transition"
+          >
+            Load more comments
+          </button>
+        )}
       </div>
     </div>
   );

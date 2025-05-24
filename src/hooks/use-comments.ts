@@ -1,6 +1,12 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  InfiniteData,
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { Comment, User, ReactionType } from "@prisma/client";
 
 export const commentsQueryKey = (videoId: string) =>
@@ -16,11 +22,28 @@ export interface CommentWithRelations extends Comment {
 
 export interface CommentsResponse {
   totalComments: number;
-  comments: CommentWithRelations[];
+  items: CommentWithRelations[];
+  nextCursor: { id: string; createdAt: string } | null;
 }
 
-async function getComments(videoId: string): Promise<CommentsResponse> {
-  const response = await fetch(`/api/videos/${videoId}/comments`);
+type PageParam = { id: string; createdAt: string } | undefined;
+
+async function getComments(
+  videoId: string,
+  pageParam?: PageParam
+): Promise<CommentsResponse> {
+  const params: Record<string, string> = {
+    limit: "10",
+  };
+
+  if (pageParam) {
+    params.cursor = JSON.stringify(pageParam);
+  }
+
+  const searchParams = new URLSearchParams(params);
+  const response = await fetch(
+    `/api/videos/${videoId}/comments?${searchParams}`
+  );
   if (!response.ok) {
     throw new Error("Failed to fetch comments");
   }
@@ -51,9 +74,17 @@ export function useCommentReplies(videoId: string, parentId: string) {
 }
 
 export function useComments(videoId: string) {
-  return useQuery<CommentsResponse>({
+  return useInfiniteQuery<
+    CommentsResponse,
+    Error,
+    InfiniteData<CommentsResponse>,
+    ReturnType<typeof commentsQueryKey>,
+    PageParam
+  >({
     queryKey: commentsQueryKey(videoId),
-    queryFn: () => getComments(videoId),
+    queryFn: ({ pageParam }) => getComments(videoId, pageParam),
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    initialPageParam: undefined,
   });
 }
 

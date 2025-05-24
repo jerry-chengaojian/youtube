@@ -38,15 +38,40 @@ export async function GET(
   try {
     const session = await auth();
     const userId = session?.user?.id;
-
     const { videoId } = await params;
+    const { searchParams } = new URL(request.url);
+    const limit = Number(searchParams.get("limit")) || 10;
+    const cursor = searchParams.get("cursor");
+    let cursorData: { id: string; createdAt: Date } | null = null;
+
+    try {
+      if (cursor) {
+        const parsed = JSON.parse(cursor);
+        if (parsed && typeof parsed === "object" && "createdAt" in parsed) {
+          cursorData = {
+            ...parsed,
+            createdAt: new Date(parsed.createdAt),
+          };
+        }
+      }
+    } catch (e) {
+      console.error("[CURSOR_PARSE_ERROR]", e);
+    }
 
     const totalComments = await prisma.comment.count({
       where: { videoId },
     });
 
     const comments = await prisma.comment.findMany({
-      where: { videoId, parentId: null },
+      where: {
+        videoId,
+        parentId: null,
+        ...(cursorData && {
+          createdAt: {
+            lt: cursorData.createdAt,
+          },
+        }),
+      },
       include: {
         user: true,
         replies: {
@@ -71,6 +96,7 @@ export async function GET(
           },
         },
       },
+      take: limit + 1,
       orderBy: {
         createdAt: "desc",
       },
@@ -101,7 +127,20 @@ export async function GET(
       })
     );
 
-    const formattedComments = commentsWithReactions.map((comment) => ({
+    const hasMore = commentsWithReactions.length > limit;
+    const data = hasMore
+      ? commentsWithReactions.slice(0, -1)
+      : commentsWithReactions;
+    const lastItem = data[data.length - 1];
+    const nextCursor =
+      hasMore && lastItem
+        ? {
+            id: lastItem.id,
+            createdAt: lastItem.createdAt,
+          }
+        : null;
+
+    const formattedComments = data.map((comment) => ({
       ...comment,
       replyCount: comment._count.replies,
       likes: comment.likes,
@@ -114,7 +153,8 @@ export async function GET(
 
     return NextResponse.json({
       totalComments,
-      comments: formattedComments,
+      items: formattedComments,
+      nextCursor,
     });
   } catch (error) {
     console.error("[COMMENTS_GET]", error);
