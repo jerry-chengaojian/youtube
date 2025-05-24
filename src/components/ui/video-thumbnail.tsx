@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 
 interface VideoThumbnailProps {
-  imageUrl: string;
+  imageUrl: string | null;
   title: string;
   duration: number;
 }

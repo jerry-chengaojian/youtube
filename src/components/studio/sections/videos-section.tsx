@@ -100,14 +100,12 @@ const VideosSectionContent = () => {
                 <TableCell className="text-sm truncate">
                   {format(new Date(video.createdAt), "d MMM yyyy")}
                 </TableCell>
+                <TableCell className="text-right text-sm">viewCount</TableCell>
                 <TableCell className="text-right text-sm">
-                  {video.viewCount}
-                </TableCell>
-                <TableCell className="text-right text-sm">
-                  {video.commentCount}
+                  commentCount
                 </TableCell>
                 <TableCell className="text-right text-sm pr-6">
-                  {video.likeCount}
+                  likeCount
                 </TableCell>
               </TableRow>
             ))}
