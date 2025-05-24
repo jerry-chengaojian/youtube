@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
+import { ChevronDownIcon, ChevronUpIcon, PlayCircle } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { useVideoViews } from "@/hooks/use-video-views";
@@ -39,7 +39,8 @@ export const VideoDescription = ({
       className="bg-secondary/50 rounded-xl p-3 cursor-pointer hover:bg-secondary/70 transition"
     >
       <div className="flex gap-2 text-sm mb-2">
-        <span className="font-medium">
+        <span className="font-medium flex items-center gap-1">
+          <PlayCircle className="size-4" />
           {isExpanded ? expandedViews : compactViews}
         </span>
         <span className="font-medium">

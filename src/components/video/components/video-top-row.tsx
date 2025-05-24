@@ -16,7 +16,7 @@ export const VideoTopRow = ({ video }: VideoTopRowProps) => {
     return formatDistanceToNow(video.createdAt, { addSuffix: true });
   }, [video.createdAt]);
   const expandedDate = useMemo(() => {
-    return format(video.createdAt, "d MMM yyyy");
+    return format(video.createdAt, "d MMM yyyy HH:mm:ss");
   }, [video.createdAt]);
 
   return (
