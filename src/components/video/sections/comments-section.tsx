@@ -4,6 +4,7 @@ import { CommentForm } from "@/components/comments/comment-form";
 import { CommentItem } from "@/components/comments/comment-item";
 import { useComments } from "@/hooks/use-comments";
 import { Loader2Icon } from "lucide-react";
+import { InfiniteScroll } from "@/components/ui/infinite-scroll";
 
 interface CommentsSectionProps {
   videoId: string;
@@ -47,14 +48,11 @@ export const CommentsSection = ({ videoId }: CommentsSectionProps) => {
           ))}
           {isFetchingNextPage && <CommentsSectionSkeleton />}
         </div>
-        {hasNextPage && !isFetchingNextPage && (
-          <button
-            onClick={() => fetchNextPage()}
-            className="text-sm text-muted-foreground hover:text-foreground transition"
-          >
-            Load more comments
-          </button>
-        )}
+        <InfiniteScroll
+          hasNextPage={hasNextPage}
+          isFetchingNextPage={isFetchingNextPage}
+          fetchNextPage={fetchNextPage}
+        />
       </div>
     </div>
   );

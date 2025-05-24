@@ -8,6 +8,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { Comment, User, ReactionType } from "@prisma/client";
+import { DEFAULT_LIMIT } from "../constants";
 
 export const commentsQueryKey = (videoId: string) =>
   ["comments", videoId] as const;
@@ -33,7 +34,7 @@ async function getComments(
   pageParam?: PageParam
 ): Promise<CommentsResponse> {
   const params: Record<string, string> = {
-    limit: "10",
+    limit: DEFAULT_LIMIT.toString(),
   };
 
   if (pageParam) {

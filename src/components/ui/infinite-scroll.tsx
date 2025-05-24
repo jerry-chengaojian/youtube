@@ -14,7 +14,7 @@ export function InfiniteScroll({
   hasNextPage,
   isFetchingNextPage,
   fetchNextPage,
-  isManual,
+  isManual = false,
 }: InfiniteScrollProps) {
   useEffect(() => {
     const handleScroll = () => {

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
+import { DEFAULT_LIMIT } from "@/constants";
 
 export async function POST(
   request: Request,
@@ -40,7 +41,7 @@ export async function GET(
     const userId = session?.user?.id;
     const { videoId } = await params;
     const { searchParams } = new URL(request.url);
-    const limit = Number(searchParams.get("limit")) || 10;
+    const limit = Number(searchParams.get("limit")) || DEFAULT_LIMIT;
     const cursor = searchParams.get("cursor");
     let cursorData: { id: string; createdAt: Date } | null = null;
 
