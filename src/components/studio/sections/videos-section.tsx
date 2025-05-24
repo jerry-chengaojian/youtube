@@ -81,7 +81,7 @@ const VideosSectionContent = () => {
                       <span className="text-sm line-clamp-1">
                         {video.title}
                       </span>
-                      <span className="text-xs text-muted-foreground line-clamp-1">
+                      <span className="text-xs text-muted-foreground truncate max-w-64">
                         {video.description || "No description"}
                       </span>
                     </div>
@@ -101,13 +101,13 @@ const VideosSectionContent = () => {
                   {format(new Date(video.createdAt), "d MMM yyyy")}
                 </TableCell>
                 <TableCell className="text-right text-sm">
-                  {video._count.videoViews}
+                  {video.videoViews}
                 </TableCell>
                 <TableCell className="text-right text-sm">
-                  {video._count.comments}
+                  {video.comments}
                 </TableCell>
                 <TableCell className="text-right text-sm pr-6">
-                  {video._count.videoReactions}
+                  {video.videoReactions}
                 </TableCell>
               </TableRow>
             ))}

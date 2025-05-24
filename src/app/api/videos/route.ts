@@ -88,11 +88,8 @@ export async function GET(request: Request) {
         updatedAt: "desc",
       },
       include: {
-        category: {
-          select: {
-            name: true,
-          },
-        },
+        user: true,
+        category: true,
         _count: {
           select: {
             videoViews: true,
@@ -118,8 +115,15 @@ export async function GET(request: Request) {
           }
         : null;
 
+    const formattedData = data.map((video) => ({
+      ...video,
+      videoViews: video._count.videoViews,
+      comments: video._count.comments,
+      videoReactions: video._count.videoReactions,
+    }));
+
     return NextResponse.json({
-      items: data,
+      items: formattedData,
       nextCursor,
     });
   } catch (error) {
