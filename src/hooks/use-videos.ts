@@ -22,6 +22,11 @@ export interface Video {
   user: User;
   category: Category | null;
   categoryId: string | null;
+  _count: {
+    videoViews: number;
+    comments: number;
+    videoReactions: number;
+  };
 };
 
 type VideosResponse = {

@@ -93,6 +93,17 @@ export async function GET(request: Request) {
             name: true,
           },
         },
+        _count: {
+          select: {
+            videoViews: true,
+            comments: true,
+            videoReactions: {
+              where: {
+                type: "like",
+              },
+            },
+          },
+        },
       },
     });
 
