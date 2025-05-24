@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/form";
 import { UserAvatar } from "../ui/user-avatar";
 import { toast } from "sonner";
+import { useCreateComment } from "@/hooks/use-comments";
+import { useSession } from "next-auth/react";
 
 const commentSchema = z.object({
   parentId: z.string().optional(),
@@ -27,8 +29,6 @@ interface CommentFormProps {
   variant?: "comment" | "reply";
 }
 
-import { useCreateComment } from "@/hooks/use-comments";
-
 export const CommentForm = ({
   videoId,
   parentId,
@@ -36,7 +36,7 @@ export const CommentForm = ({
   onSuccess,
   variant = "comment",
 }: CommentFormProps) => {
-  const { mutate: createComment } = useCreateComment();
+  const { mutate: createComment, isPending } = useCreateComment();
   const form = useForm<z.infer<typeof commentSchema>>({
     resolver: zodResolver(commentSchema),
     defaultValues: {
@@ -45,6 +45,8 @@ export const CommentForm = ({
       value: "",
     },
   });
+
+  const { data: session } = useSession();
 
   const handleSubmit = (values: z.infer<typeof commentSchema>) => {
     createComment(values, {
@@ -70,7 +72,11 @@ export const CommentForm = ({
         onSubmit={form.handleSubmit(handleSubmit)}
         className="flex gap-4 group"
       >
-        <UserAvatar size="lg" imageUrl="/user-placeholder.svg" name="User" />
+        <UserAvatar
+          size="lg"
+          imageUrl={session?.user?.image || "/avatar.jpg"}
+          name={session?.user?.name || "User"}
+        />
         <div className="flex-1">
           <FormField
             name="value"
@@ -85,7 +91,7 @@ export const CommentForm = ({
                         ? "Reply to this comment..."
                         : "Add a comment..."
                     }
-                    className="resize-none bg-transparent overflow-hidden min-h-0"
+                    className="resize-none bg-transparent overflow-hidden min-h-12"
                   />
                 </FormControl>
                 <FormMessage />
@@ -98,7 +104,7 @@ export const CommentForm = ({
                 Cancel
               </Button>
             )}
-            <Button type="submit" size="sm">
+            <Button disabled={isPending} type="submit" size="sm">
               {variant === "reply" ? "Reply" : "Comment"}
             </Button>
           </div>
