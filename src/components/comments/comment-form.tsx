@@ -76,6 +76,7 @@ export const CommentForm = ({
           size="lg"
           imageUrl={session?.user?.image || "/avatar.jpg"}
           name={session?.user?.name || "User"}
+          className="mt-2"
         />
         <div className="flex-1">
           <FormField
@@ -91,7 +92,7 @@ export const CommentForm = ({
                         ? "Reply to this comment..."
                         : "Add a comment..."
                     }
-                    className="resize-none bg-transparent overflow-hidden min-h-12"
+                    className="resize-none bg-transparent overflow-hidden"
                   />
                 </FormControl>
                 <FormMessage />
