@@ -1,14 +1,8 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
-
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { VideoMenu } from "./video-menu";
 import { VideoThumbnail } from "@/components/ui/video-thumbnail";
 import { UserAvatar } from "@/components/ui/user-avatar";
