@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { UserCircleIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AuthButton } from "./auth-button";
+import { SearchInput } from "./search-input";
 
 export const HomeNavbar = () => {
   return (
@@ -24,7 +25,7 @@ export const HomeNavbar = () => {
 
         {/* Search bar */}
         <div className="flex-1 flex justify-center max-w-[720px] mx-auto">
-          <Input className="pl-4 py-2 rounded-full" placeholder="Search" />
+          <SearchInput />
         </div>
 
         <AuthButton />

@@ -22,7 +22,7 @@ export const AuthButton = () => {
   };
 
   return (
-    <>
+    <div className="min-w-24 flex justify-end">
       {session ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -62,6 +62,6 @@ export const AuthButton = () => {
           Sign in
         </Button>
       )}
-    </>
+    </div>
   );
 };
