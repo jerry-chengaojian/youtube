@@ -65,7 +65,7 @@ export async function GET(request: Request) {
 
     const formattedData = items.map((video) => ({
       ...video,
-      viewCount: video._count.videoViews,
+      videoViews: video._count.videoViews,
       commentCount: video._count.comments,
       likeCount: video._count.videoReactions,
     }));
