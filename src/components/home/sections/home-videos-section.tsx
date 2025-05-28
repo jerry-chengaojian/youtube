@@ -12,6 +12,7 @@ interface HomeVideosSectionProps {
 }
 
 export const HomeVideosSection = (props: HomeVideosSectionProps) => {
+  const { categoryId } = props;
   const {
     data,
     fetchNextPage,
@@ -19,7 +20,7 @@ export const HomeVideosSection = (props: HomeVideosSectionProps) => {
     isFetchingNextPage,
     isLoading,
     error,
-  } = useFeed();
+  } = useFeed(categoryId);
 
   if (isLoading) {
     return <HomeVideosSectionSkeleton />;

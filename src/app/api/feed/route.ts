@@ -7,6 +7,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const limit = Number(searchParams.get("limit")) || DEFAULT_LIMIT;
     const cursor = searchParams.get("cursor");
+    const categoryId = searchParams.get("categoryId");
     let cursorData: { id: string; updatedAt: Date } | null = null;
 
     try {
@@ -26,6 +27,7 @@ export async function GET(request: Request) {
     const videos = await prisma.video.findMany({
       where: {
         visibility: "public",
+        ...(categoryId && { categoryId }),
         ...(cursorData && {
           updatedAt: {
             lt: cursorData.updatedAt,
