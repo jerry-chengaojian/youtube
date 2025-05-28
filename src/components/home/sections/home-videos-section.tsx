@@ -9,10 +9,11 @@ import { useFeed } from "@/hooks/use-feed";
 
 interface HomeVideosSectionProps {
   categoryId?: string;
+  search?: string;
 }
 
 export const HomeVideosSection = (props: HomeVideosSectionProps) => {
-  const { categoryId } = props;
+  const { categoryId, search } = props;
   const {
     data,
     fetchNextPage,
@@ -20,7 +21,7 @@ export const HomeVideosSection = (props: HomeVideosSectionProps) => {
     isFetchingNextPage,
     isLoading,
     error,
-  } = useFeed(categoryId);
+  } = useFeed(categoryId, search);
 
   if (isLoading) {
     return <HomeVideosSectionSkeleton />;

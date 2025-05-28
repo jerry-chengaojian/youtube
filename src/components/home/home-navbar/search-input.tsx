@@ -3,12 +3,23 @@
 import { SearchIcon, XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export const SearchInput = () => {
   const [value, setValue] = useState("");
+  const router = useRouter();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    const url = new URL(window.location.href);
+
+    if (value.trim()) {
+      url.searchParams.set("search", value.trim());
+    } else {
+      url.searchParams.delete("search");
+    }
+
+    router.push(url.toString());
   };
 
   return (

@@ -2,8 +2,8 @@ import { InfiniteData, useInfiniteQuery } from "@tanstack/react-query";
 import { DEFAULT_LIMIT } from "@/constants";
 import { Video } from "./use-videos";
 
-export const videosQueryKey = (categoryId?: string) =>
-  ["videos", categoryId] as const;
+export const videosQueryKey = (categoryId?: string, search?: string) =>
+  ["videos", categoryId, search] as const;
 
 type VideosResponse = {
   items: Video[];
@@ -14,7 +14,8 @@ type PageParam = { id: string; updatedAt: string } | undefined;
 
 async function getVideos(
   pageParam?: PageParam,
-  categoryId?: string
+  categoryId?: string,
+  search?: string
 ): Promise<VideosResponse> {
   const params: Record<string, string> = {
     limit: String(DEFAULT_LIMIT),
@@ -27,6 +28,10 @@ async function getVideos(
     params.categoryId = categoryId;
   }
 
+  if (search) {
+    params.search = search;
+  }
+
   const searchParams = new URLSearchParams(params);
   const response = await fetch(`/api/feed?${searchParams}`);
 
@@ -37,7 +42,7 @@ async function getVideos(
   return response.json();
 }
 
-export function useFeed(categoryId?: string) {
+export function useFeed(categoryId?: string, search?: string) {
   return useInfiniteQuery<
     VideosResponse,
     Error,
@@ -45,8 +50,8 @@ export function useFeed(categoryId?: string) {
     ReturnType<typeof videosQueryKey>,
     PageParam
   >({
-    queryKey: videosQueryKey(categoryId),
-    queryFn: ({ pageParam }) => getVideos(pageParam, categoryId),
+    queryKey: videosQueryKey(categoryId, search),
+    queryFn: ({ pageParam }) => getVideos(pageParam, categoryId, search),
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     initialPageParam: undefined,
   });

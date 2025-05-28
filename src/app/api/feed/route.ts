@@ -8,6 +8,7 @@ export async function GET(request: Request) {
     const limit = Number(searchParams.get("limit")) || DEFAULT_LIMIT;
     const cursor = searchParams.get("cursor");
     const categoryId = searchParams.get("categoryId");
+    const search = searchParams.get("search");
     let cursorData: { id: string; updatedAt: Date } | null = null;
 
     try {
@@ -28,6 +29,12 @@ export async function GET(request: Request) {
       where: {
         visibility: "public",
         ...(categoryId && { categoryId }),
+        ...(search && {
+          OR: [
+            { title: { contains: search, mode: "insensitive" } },
+            { description: { contains: search, mode: "insensitive" } },
+          ],
+        }),
         ...(cursorData && {
           updatedAt: {
             lt: cursorData.updatedAt,
