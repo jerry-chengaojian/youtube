@@ -4,7 +4,7 @@ export const config = {
   matcher: [
     "/dashboard/:path*",
     "/playlists/:path*",
-    "/feed/:path*",
+    "/feed/subscribed",
     "/studio",
   ],
 };
