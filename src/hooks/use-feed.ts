@@ -1,4 +1,8 @@
-import { InfiniteData, useInfiniteQuery } from "@tanstack/react-query";
+import {
+  InfiniteData,
+  useInfiniteQuery,
+  useQuery,
+} from "@tanstack/react-query";
 import { DEFAULT_LIMIT } from "@/constants";
 import { Video } from "./use-videos";
 
@@ -92,5 +96,24 @@ export function useFeed(categoryId?: string, search?: string) {
     queryFn: ({ pageParam }) => getVideos(pageParam, categoryId, search),
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     initialPageParam: undefined,
+  });
+}
+
+export const trendingQueryKey = () => ["trending"] as const;
+
+async function getTrending(): Promise<Video[]> {
+  const response = await fetch("/api/feed/trending");
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch trending videos");
+  }
+
+  return response.json();
+}
+
+export function useTrending() {
+  return useQuery<Video[], Error>({
+    queryKey: trendingQueryKey(),
+    queryFn: getTrending,
   });
 }
