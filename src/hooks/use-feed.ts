@@ -42,6 +42,44 @@ async function getVideos(
   return response.json();
 }
 
+export const subscriptionsQueryKey = () => ["subscriptions"] as const;
+
+async function getSubscriptions(
+  pageParam?: PageParam
+): Promise<VideosResponse> {
+  const params: Record<string, string> = {
+    limit: String(DEFAULT_LIMIT),
+  };
+
+  if (pageParam) {
+    params.cursor = JSON.stringify(pageParam);
+  }
+
+  const searchParams = new URLSearchParams(params);
+  const response = await fetch(`/api/feed/subscriptions?${searchParams}`);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch subscriptions");
+  }
+
+  return response.json();
+}
+
+export function useSubscriptions() {
+  return useInfiniteQuery<
+    VideosResponse,
+    Error,
+    InfiniteData<VideosResponse>,
+    ReturnType<typeof subscriptionsQueryKey>,
+    PageParam
+  >({
+    queryKey: subscriptionsQueryKey(),
+    queryFn: ({ pageParam }) => getSubscriptions(pageParam),
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    initialPageParam: undefined,
+  });
+}
+
 export function useFeed(categoryId?: string, search?: string) {
   return useInfiniteQuery<
     VideosResponse,
