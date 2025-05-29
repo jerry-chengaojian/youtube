@@ -18,7 +18,7 @@ export const AuthButton = () => {
   const router = useRouter();
 
   const handleStudioClick = () => {
-    router.push("/studio");
+    router.push("/studios");
   };
 
   return (

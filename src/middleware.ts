@@ -5,6 +5,6 @@ export const config = {
     "/dashboard/:path*",
     "/playlists/:path*",
     "/feed/subscribed",
-    "/studio",
+    "/studios",
   ],
 };

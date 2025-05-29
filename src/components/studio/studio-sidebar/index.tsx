@@ -27,11 +27,11 @@ export const StudioSidebar = () => {
             <StudioSidebarHeader />
             <SidebarMenuItem>
               <SidebarMenuButton
-                isActive={pathname === "/studio"}
+                isActive={pathname === "/studios"}
                 tooltip="Content"
                 asChild
               >
-                <Link prefetch href="/studio">
+                <Link prefetch href="/studios">
                   <VideoIcon className="size-5" />
                   <span className="text-sm">Content</span>
                 </Link>

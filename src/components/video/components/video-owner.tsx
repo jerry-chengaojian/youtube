@@ -53,7 +53,7 @@ export const VideoOwner = ({ user, videoId }: VideoOwnerProps) => {
       </Link>
       {userId === user.id ? (
         <Button variant="secondary" className="rounded-full" asChild>
-          <Link prefetch href={`/studio/videos/${videoId}`}>
+          <Link prefetch href={`/studios/${videoId}`}>
             Edit video
           </Link>
         </Button>

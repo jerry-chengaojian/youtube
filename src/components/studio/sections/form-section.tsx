@@ -262,8 +262,6 @@ export const FormSection = ({ videoId }: FormSectionProps) => {
                     src={video.videoUrl}
                     className="w-full h-full object-cover"
                     controls
-                    autoPlay
-                    muted
                   />
                 )}
               </div>
