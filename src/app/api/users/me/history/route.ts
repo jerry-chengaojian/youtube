@@ -76,8 +76,8 @@ export async function GET(request: Request) {
       ...item.video,
       user: item.video.user,
       viewedAt: item.updatedAt,
-      viewCount: item.video._count.videoViews,
-      likeCount: item.video._count.videoReactions,
+      videoViews: item.video._count.videoViews,
+      videoReactions: item.video._count.videoReactions,
     }));
 
     return NextResponse.json({
