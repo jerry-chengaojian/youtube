@@ -1,3 +1,4 @@
+import { PlaylistAddModal } from "@/components/playlists/components/playlist-add-modal";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,6 +12,7 @@ import {
   ListPlusIcon,
   Trash2Icon,
 } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 interface VideoMenuProps {
@@ -27,8 +29,15 @@ export const VideoMenu = ({ videoId, variant, onRemove }: VideoMenuProps) => {
     toast.success("Link copied to the clipboard");
   };
 
+  const [isOpenPlaylistAddModal, setIsOpenPlaylistAddModal] = useState(false);
+
   return (
     <>
+      <PlaylistAddModal
+        videoId={videoId}
+        open={isOpenPlaylistAddModal}
+        onOpenChange={setIsOpenPlaylistAddModal}
+      />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant={"secondary"} size="icon" className="rounded-full">
@@ -40,7 +49,7 @@ export const VideoMenu = ({ videoId, variant, onRemove }: VideoMenuProps) => {
             <ShareIcon className="mr-2 size-4" />
             Share
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => {}}>
+          <DropdownMenuItem onClick={() => setIsOpenPlaylistAddModal(true)}>
             <ListPlusIcon className="mr-2 size-4" />
             Add to playlist
           </DropdownMenuItem>
