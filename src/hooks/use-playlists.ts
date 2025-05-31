@@ -62,7 +62,7 @@ export interface VideoPlaylistStatus {
   hasVideo: boolean;
 }
 
-export function useVideoPlaylists(videoId: string) {
+export function useVideoPlaylists(videoId: string, open: boolean) {
   return useQuery<VideoPlaylistStatus[]>({
     queryKey: ["videoPlaylists", videoId],
     queryFn: async () => {
@@ -72,6 +72,7 @@ export function useVideoPlaylists(videoId: string) {
       }
       return response.json();
     },
+    enabled: !!videoId && open,
   });
 }
 

@@ -16,7 +16,7 @@ export const PlaylistAddModal = ({
   onOpenChange,
   videoId,
 }: PlaylistAddModalProps) => {
-  const { data: playlists, isLoading } = useVideoPlaylists(videoId);
+  const { data: playlists, isLoading } = useVideoPlaylists(videoId, open);
   const { mutate: toggleVideoInPlaylist, isPending } =
     useToggleVideoInPlaylist();
 
