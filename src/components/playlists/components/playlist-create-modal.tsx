@@ -12,6 +12,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { useCreatePlaylist } from "@/hooks/use-playlists";
+import { toast } from "sonner";
 
 interface PlaylistCreateModalProps {
   open: boolean;
@@ -26,6 +28,7 @@ export const PlaylistCreateModal = ({
   open,
   onOpenChange,
 }: PlaylistCreateModalProps) => {
+  const { mutate: createPlaylist, isPending } = useCreatePlaylist();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -33,7 +36,18 @@ export const PlaylistCreateModal = ({
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {};
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    createPlaylist(values, {
+      onSuccess: () => {
+        toast.success("Playlist created successfully");
+        form.reset();
+        onOpenChange(false);
+      },
+      onError: () => {
+        toast.error("Failed to create playlist");
+      },
+    });
+  };
 
   return (
     <ResponsiveModal
@@ -51,7 +65,7 @@ export const PlaylistCreateModal = ({
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Prompt</FormLabel>
+                <FormLabel>Name</FormLabel>
                 <FormControl>
                   <Input {...field} placeholder="My favorite videos" />
                 </FormControl>
@@ -60,8 +74,8 @@ export const PlaylistCreateModal = ({
             )}
           />
           <div className="flex justify-end">
-            <Button disabled={false} type="submit">
-              Create
+            <Button disabled={isPending} type="submit">
+              {isPending ? "Creating..." : "Create"}
             </Button>
           </div>
         </form>
