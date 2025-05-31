@@ -24,6 +24,7 @@ model User {
   subscribers Subscription[] @relation("subscriptions_creator")
   comments Comment[]
   reactions CommentReaction[]
+  playlists Playlist[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -132,4 +133,27 @@ model CommentReaction {
   updatedAt DateTime @updatedAt
 
   @@id([userId, commentId])
+}
+
+
+model Playlist {
+  id          String         @id @default(uuid())
+  name        String
+  description String?
+  userId      String
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  videos      PlaylistVideo[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model PlaylistVideo {
+  playlistId String
+  playlist   Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  videoId    String
+  video      Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@id([playlistId, videoId])
 }
