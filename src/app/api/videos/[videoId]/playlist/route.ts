@@ -45,3 +45,44 @@ export async function GET(
       return new NextResponse("Internal Error", { status: 500 });
     }
   }
+
+export async function POST(
+  request: Request,
+  { params }: { params: Promise<{ videoId: string }> }
+) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    const { videoId } = await params;
+    const userId = session.user.id;
+    const { playlistId, action } = await request.json();
+
+    if (action === "add") {
+      await prisma.playlistVideo.create({
+        data: {
+          playlistId,
+          videoId,
+        },
+      });
+    } else if (action === "remove") {
+      await prisma.playlistVideo.delete({
+        where: {
+          playlistId_videoId: {
+            playlistId,
+            videoId,
+          },
+        },
+      });
+    } else {
+      return new NextResponse("Invalid action", { status: 400 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("[VIDEO_PLAYLIST_POST]", error);
+    return new NextResponse("Internal Error", { status: 500 });
+  }
+}
