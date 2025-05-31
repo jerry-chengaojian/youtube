@@ -9,7 +9,7 @@ interface PlaylistGridCardProps {
   data: {
     id: string;
     name: string;
-    thumbnailUrl: string;
+    thumbnailUrl: string | null;
     videoCount: number;
   };
 }
