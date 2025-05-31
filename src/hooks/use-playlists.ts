@@ -48,6 +48,63 @@ export function useCreatePlaylist() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: playlistsQueryKey });
+      queryClient.invalidateQueries({
+        queryKey: ["videoPlaylists"],
+        exact: false,
+      });
+    },
+  });
+}
+
+export interface VideoPlaylistStatus {
+  id: string;
+  name: string;
+  hasVideo: boolean;
+}
+
+export function useVideoPlaylists(videoId: string) {
+  return useQuery<VideoPlaylistStatus[]>({
+    queryKey: ["videoPlaylists", videoId],
+    queryFn: async () => {
+      const response = await fetch(`/api/videos/${videoId}/playlist`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch video playlists status");
+      }
+      return response.json();
+    },
+  });
+}
+
+export function useToggleVideoInPlaylist() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      videoId,
+      playlistId,
+      action,
+    }: {
+      videoId: string;
+      playlistId: string;
+      action: "add" | "remove";
+    }) => {
+      const response = await fetch(`/api/videos/${videoId}/playlist`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ playlistId, action }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to toggle video in playlist");
+      }
+
+      return response.json();
+    },
+    onSuccess: (_, { videoId }) => {
+      queryClient.invalidateQueries({ queryKey: ["videoPlaylists", videoId] });
+      queryClient.invalidateQueries({ queryKey: playlistsQueryKey });
     },
   });
 }
