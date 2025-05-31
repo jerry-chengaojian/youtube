@@ -59,6 +59,7 @@ model Video {
   videoViews VideoView[]
   videoReactions VideoReaction[]
   comments Comment[]
+  playlistVideos PlaylistVideo[]
 
   @@index([userId])
   @@index([categoryId])
