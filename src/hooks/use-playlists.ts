@@ -1,20 +1,21 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Playlist } from "@prisma/client";
 
-export const playlistsQueryKey = (userId: string) =>
-  ["playlists", userId] as const;
+export const playlistsQueryKey = ["playlists"] as const;
 
-export interface PlaylistWithVideos extends Playlist {
+export interface Playlist {
+  id: string;
+  name: string;
+  thumbnailUrl: string | null;
   videoCount: number;
 }
 
-export function usePlaylists(userId: string) {
-  return useQuery<PlaylistWithVideos[]>({
-    queryKey: playlistsQueryKey(userId),
+export function usePlaylists() {
+  return useQuery<Playlist[]>({
+    queryKey: playlistsQueryKey,
     queryFn: async () => {
-      const response = await fetch(`/api/playlists?userId=${userId}`);
+      const response = await fetch(`/api/playlists`);
       if (!response.ok) {
         throw new Error("Failed to fetch playlists");
       }
@@ -46,7 +47,7 @@ export function useCreatePlaylist() {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["playlists"] });
+      queryClient.invalidateQueries({ queryKey: playlistsQueryKey });
     },
   });
 }
