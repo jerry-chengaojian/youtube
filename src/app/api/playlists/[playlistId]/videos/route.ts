@@ -50,7 +50,10 @@ export async function GET(
       videoReactions: video._count.videoReactions,
     }));
 
-    return NextResponse.json(formattedData);
+    return NextResponse.json({
+      ...playlist,
+      videos: formattedData,
+    });
   } catch (error) {
     console.error("[PLAYLIST_VIDEOS_GET]", error);
     return new NextResponse("Internal Error", { status: 500 });

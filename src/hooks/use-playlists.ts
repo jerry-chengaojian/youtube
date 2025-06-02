@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Video } from "./use-videos";
 
 export const playlistsQueryKey = ["playlists"] as const;
 
@@ -62,6 +63,10 @@ export interface VideoPlaylistStatus {
   hasVideo: boolean;
 }
 
+export interface VideoPlaylistDetails extends Playlist {
+  videos: Video[];
+}
+
 export function useVideoPlaylists(videoId: string, open: boolean) {
   return useQuery<VideoPlaylistStatus[]>({
     queryKey: ["videoPlaylists", videoId],
@@ -107,5 +112,22 @@ export function useToggleVideoInPlaylist() {
       queryClient.invalidateQueries({ queryKey: ["videoPlaylists", videoId] });
       queryClient.invalidateQueries({ queryKey: playlistsQueryKey });
     },
+  });
+}
+
+export const playlistVideosQueryKey = (playlistId: string) =>
+  ["playlistVideos", playlistId] as const;
+
+export function usePlaylistVideos(playlistId: string) {
+  return useQuery<VideoPlaylistDetails>({
+    queryKey: playlistVideosQueryKey(playlistId),
+    queryFn: async () => {
+      const response = await fetch(`/api/playlists/${playlistId}/videos`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch playlist videos");
+      }
+      return response.json();
+    },
+    enabled: !!playlistId,
   });
 }
