@@ -1,4 +1,4 @@
-import { VideosView } from "@/components/playlists/views/videos-view";
+import { PlaylistDetailView } from "@/components/playlists/views/playlist-detail-view";
 
 interface PageProps {
   params: Promise<{ playlistId: string }>;
@@ -7,7 +7,7 @@ interface PageProps {
 const Page = async ({ params }: PageProps) => {
   const { playlistId } = await params;
 
-  return <VideosView playlistId={playlistId} />;
+  return <PlaylistDetailView playlistId={playlistId} />;
 };
 
 export default Page;
