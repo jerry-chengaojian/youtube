@@ -108,9 +108,12 @@ export function useToggleVideoInPlaylist() {
 
       return response.json();
     },
-    onSuccess: (_, { videoId }) => {
+    onSuccess: (_, { videoId, playlistId }) => {
       queryClient.invalidateQueries({ queryKey: ["videoPlaylists", videoId] });
       queryClient.invalidateQueries({ queryKey: playlistsQueryKey });
+      queryClient.invalidateQueries({
+        queryKey: playlistVideosQueryKey(playlistId),
+      });
     },
   });
 }
