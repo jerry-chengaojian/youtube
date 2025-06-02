@@ -1,25 +1,19 @@
 "use client";
 
-import { Suspense } from "react";
 import { Trash2Icon } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface PlaylistHeaderSectionProps {
-  playlistId: string;
+  id?: string;
+  name?: string;
 }
 
-export const PlaylistHeaderSection = ({
-  playlistId,
-}: PlaylistHeaderSectionProps) => {
-  const emptyFunction = () => {};
-  const playlist = { name: "Playlist Name" };
-
+export const PlaylistHeaderSection = ({ id, name }: PlaylistHeaderSectionProps) => {
   return (
     <div className="flex justify-between items-center">
       <div>
-        <h1 className="text-2xl font-bold">{playlist.name}</h1>
+        <h1 className="text-2xl font-bold">{name}</h1>
         <p className="text-xs text-muted-foreground">
           Videos from the playlist
         </p>
@@ -28,7 +22,7 @@ export const PlaylistHeaderSection = ({
         variant="outline"
         size="icon"
         className="rounded-full"
-        onClick={emptyFunction}
+        onClick={() => {}}
       >
         <Trash2Icon />
       </Button>

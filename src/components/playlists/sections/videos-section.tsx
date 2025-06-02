@@ -11,48 +11,19 @@ import {
 import { Video } from "@/hooks/use-videos";
 
 interface VideosSectionProps {
-  playlistId: string;
+  videos?: Video[];
 }
 
-const mockVideos: Video[] = Array.from({ length: 6 }).map((_, index) => ({
-  user: {
-    id: "mock-user",
-    name: "Mock User",
-    email: "mock@example.com",
-    password: "mock-password", // Add the missing 'password' property
-    emailVerified: null,
-    image: null,
-    createdAt: new Date(), // Convert to Date type if required by the 'Video' type
-    updatedAt: new Date(), // Convert to Date type if required by the 'Video' type
-  },
-  id: `mock-video-${index}`,
-  title: `Mock Video ${index + 1}`,
-  description: `This is a mock video description ${index + 1}`,
-  videoUrl: "",
-  thumbnailUrl: null,
-  duration: 120 + index * 30,
-  visibility: "public",
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
-  category: null,
-  categoryId: null,
-  videoViews: 1000 + index * 500,
-  comments: 10 + index,
-  videoReactions: 50 + index * 10,
-}));
-
-export const VideosSection = ({ playlistId }: VideosSectionProps) => {
-  const emptyFunction = () => {};
-
+export const VideosSection = ({ videos }: VideosSectionProps) => {
   return (
     <>
       <div className="flex flex-col gap-4 gap-y-10 md:hidden">
-        {mockVideos.map((video) => (
+        {videos?.map((video) => (
           <VideoGridCard key={video.id} data={video} />
         ))}
       </div>
       <div className="hidden flex-col gap-4 md:flex">
-        {mockVideos.map((video) => (
+        {videos?.map((video) => (
           <VideoRowCard key={video.id} data={video} size="compact" />
         ))}
       </div>
