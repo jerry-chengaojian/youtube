@@ -21,7 +21,11 @@ interface VideoMenuProps {
   onRemove?: () => void;
 }
 
-export const VideoMenu = ({ videoId, variant, onRemove }: VideoMenuProps) => {
+export const VideoMenu = ({
+  videoId,
+  variant = "ghost",
+  onRemove,
+}: VideoMenuProps) => {
   const onShare = () => {
     navigator.clipboard.writeText(
       `${window.location.origin}/videos/${videoId}`
@@ -40,7 +44,7 @@ export const VideoMenu = ({ videoId, variant, onRemove }: VideoMenuProps) => {
       />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant={"secondary"} size="icon" className="rounded-full">
+          <Button variant={variant} size="icon" className="rounded-full">
             <MoreVerticalIcon />
           </Button>
         </DropdownMenuTrigger>
