@@ -31,13 +31,6 @@ import {
   useLikeComment,
 } from "@/hooks/use-comment-reactions";
 
-interface Comment extends CommentWithRelations {
-  viewerReaction: "like" | "dislike" | null;
-  likeCount: number;
-  dislikeCount: number;
-  replyCount: number;
-}
-
 interface CommentItemProps {
   comment: CommentWithRelations;
   variant?: "reply" | "comment";

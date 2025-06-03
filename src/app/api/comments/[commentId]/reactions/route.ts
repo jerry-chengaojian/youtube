@@ -12,7 +12,7 @@ export async function POST(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { commentId, videoId } = await params;
+    const { commentId } = await params;
     const { type } = await request.json();
     const userId = session.user.id;
 

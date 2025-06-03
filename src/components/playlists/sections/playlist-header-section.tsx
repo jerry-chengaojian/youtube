@@ -9,7 +9,7 @@ interface PlaylistHeaderSectionProps {
   name?: string;
 }
 
-export const PlaylistHeaderSection = ({ id, name }: PlaylistHeaderSectionProps) => {
+export const PlaylistHeaderSection = ({ name }: PlaylistHeaderSectionProps) => {
   return (
     <div className="flex justify-between items-center">
       <div>

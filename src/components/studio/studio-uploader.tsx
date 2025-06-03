@@ -25,97 +25,105 @@ export const StudioUploader = ({ onSuccess }: { onSuccess: () => void }) => {
     setIsDragging(false);
   }, []);
 
-  const handleDrop = useCallback(async (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const files = Array.from(e.dataTransfer.files);
-    await handleUpload(files);
-  }, []);
+    const handleUpload = async (files: File[]) => {
+      if (!files.length) return;
 
-  const handleFileSelect = useCallback(
-    async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const files = Array.from(e.target.files || []);
-      await handleUpload(files);
-    },
-    []
-  );
+      const file = files[0]; // Only take the first file
+      setIsUploading(true);
+      setProgress(0);
 
-  const handleUpload = async (files: File[]) => {
-    if (!files.length) return;
+      try {
+        // Get video duration
+        const duration = await new Promise<number>((resolve) => {
+          const video = document.createElement("video");
+          video.preload = "metadata";
+          video.onloadedmetadata = () => {
+            resolve(Math.round(video.duration));
+            window.URL.revokeObjectURL(video.src);
+          };
+          video.src = URL.createObjectURL(file);
+        });
 
-    const file = files[0]; // Only take the first file
-    setIsUploading(true);
-    setProgress(0);
+        const formData = new FormData();
+        formData.append("file", file);
 
-    try {
-      // Get video duration
-      const duration = await new Promise<number>((resolve) => {
-        const video = document.createElement("video");
-        video.preload = "metadata";
-        video.onloadedmetadata = () => {
-          resolve(Math.round(video.duration));
-          window.URL.revokeObjectURL(video.src);
-        };
-        video.src = URL.createObjectURL(file);
-      });
+        const xhr = new XMLHttpRequest();
 
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const xhr = new XMLHttpRequest();
-
-      // Handle upload progress
-      xhr.upload.onprogress = (event) => {
-        if (event.lengthComputable) {
-          const percentComplete = Math.round(
-            (event.loaded / event.total) * 100
-          );
-          setProgress(percentComplete);
-        }
-      };
-
-      // Create a Promise to handle upload success or failure
-      const uploadPromise = new Promise<{ url: string }>((resolve, reject) => {
-        xhr.onload = () => {
-          if (xhr.status === 200) {
-            const response = JSON.parse(xhr.response);
-            resolve(response);
-          } else {
-            reject(new Error("Upload failed"));
+        // Handle upload progress
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            const percentComplete = Math.round(
+              (event.loaded / event.total) * 100
+            );
+            setProgress(percentComplete);
           }
         };
-        xhr.onerror = () => reject(new Error("Upload failed"));
-      });
 
-      // Start the upload
-      xhr.open("POST", "/api/upload");
-      xhr.send(formData);
+        // Create a Promise to handle upload success or failure
+        const uploadPromise = new Promise<{ url: string }>(
+          (resolve, reject) => {
+            xhr.onload = () => {
+              if (xhr.status === 200) {
+                const response = JSON.parse(xhr.response);
+                resolve(response);
+              } else {
+                reject(new Error("Upload failed"));
+              }
+            };
+            xhr.onerror = () => reject(new Error("Upload failed"));
+          }
+        );
 
-      // Wait for the upload to complete
-      const response = await uploadPromise;
+        // Start the upload
+        xhr.open("POST", "/api/upload");
+        xhr.send(formData);
 
-      // Replace the save video logic with the mutation
-      saveVideo({ videoUrl: response.url, duration: duration }, {
-        onSuccess: () => {
-          toast.success("Video uploaded successfully!");
-          setProgress(100);
-          setIsUploading(false);
-          onSuccess();
-        },
-        onError: (error) => {
-          console.error("Upload error:", error);
-          setIsUploading(false);
-          setProgress(0);
-          toast.error("Failed to upload video");
-        },
-      });
-    } catch (error) {
-      console.error("Upload error:", error);
-      setIsUploading(false);
-      setProgress(0);
-      toast.error("Failed to upload video");
-    }
-  };
+        // Wait for the upload to complete
+        const response = await uploadPromise;
+
+        // Replace the save video logic with the mutation
+        saveVideo(
+          { videoUrl: response.url, duration: duration },
+          {
+            onSuccess: () => {
+              toast.success("Video uploaded successfully!");
+              setProgress(100);
+              setIsUploading(false);
+              onSuccess();
+            },
+            onError: (error) => {
+              console.error("Upload error:", error);
+              setIsUploading(false);
+              setProgress(0);
+              toast.error("Failed to upload video");
+            },
+          }
+        );
+      } catch (error) {
+        console.error("Upload error:", error);
+        setIsUploading(false);
+        setProgress(0);
+        toast.error("Failed to upload video");
+      }
+    };
+
+    const handleDrop = useCallback(
+      async (e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragging(false);
+        const files = Array.from(e.dataTransfer.files);
+        await handleUpload(files);
+      },
+      [handleUpload]
+    );
+
+    const handleFileSelect = useCallback(
+      async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = Array.from(e.target.files || []);
+        await handleUpload(files);
+      },
+      [handleUpload]
+    );
 
   return (
     <div

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { DEFAULT_LIMIT } from "@/constants";
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
     const videos = await prisma.video.findMany({
       where: {

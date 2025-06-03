@@ -2,9 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Input } from "@/components/ui/input";
-import { UserCircleIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { AuthButton } from "./auth-button";
 import { SearchInput } from "./search-input";
 

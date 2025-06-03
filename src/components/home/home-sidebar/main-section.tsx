@@ -44,7 +44,7 @@ export const MainSection = () => {
                 tooltip={item.title}
                 asChild
                 isActive={pathname === item.url}
-                onClick={(e) => {}}
+                onClick={() => {}}
               >
                 <Link
                   prefetch

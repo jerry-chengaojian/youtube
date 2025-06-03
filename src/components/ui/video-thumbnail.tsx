@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
 
 interface VideoThumbnailProps {
   imageUrl: string | null;
@@ -14,8 +13,6 @@ export function VideoThumbnail({
   title,
   duration,
 }: VideoThumbnailProps) {
-  const [isHovered, setIsHovered] = useState(false);
-
   const formatDuration = (seconds: number) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -31,11 +28,7 @@ export function VideoThumbnail({
   };
 
   return (
-    <div
-      className="relative w-full h-full"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <div className="relative w-full h-full">
       <Image
         src={imageUrl || "/placeholder.svg"}
         alt={title}
