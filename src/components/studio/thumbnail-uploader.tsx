@@ -30,20 +30,17 @@ export const ThumbnailUploader = ({
     setIsDragging(false);
   }, []);
 
-  const handleDrop = useCallback(async (e: React.DragEvent) => {
+  const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
     const files = Array.from(e.dataTransfer.files);
     await handleUpload(files);
-  }, []);
+  };
 
-  const handleFileSelect = useCallback(
-    async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const files = Array.from(e.target.files || []);
-      await handleUpload(files);
-    },
-    []
-  );
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    await handleUpload(files);
+  };
 
   const handleUpload = async (files: File[]) => {
     if (!files.length) return;

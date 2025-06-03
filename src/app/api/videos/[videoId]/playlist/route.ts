@@ -57,7 +57,6 @@ export async function POST(
     }
 
     const { videoId } = await params;
-    const userId = session.user.id;
     const { playlistId, action } = await request.json();
 
     if (action === "add") {

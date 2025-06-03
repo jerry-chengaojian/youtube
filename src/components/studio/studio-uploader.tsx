@@ -25,15 +25,15 @@ export const StudioUploader = ({ onSuccess }: { onSuccess: () => void }) => {
     setIsDragging(false);
   }, []);
 
-    const handleUpload = async (files: File[]) => {
+  const handleUpload = useCallback(
+    async (files: File[]) => {
       if (!files.length) return;
 
-      const file = files[0]; // Only take the first file
+      const file = files[0];
       setIsUploading(true);
       setProgress(0);
 
       try {
-        // Get video duration
         const duration = await new Promise<number>((resolve) => {
           const video = document.createElement("video");
           video.preload = "metadata";
@@ -49,7 +49,6 @@ export const StudioUploader = ({ onSuccess }: { onSuccess: () => void }) => {
 
         const xhr = new XMLHttpRequest();
 
-        // Handle upload progress
         xhr.upload.onprogress = (event) => {
           if (event.lengthComputable) {
             const percentComplete = Math.round(
@@ -59,7 +58,6 @@ export const StudioUploader = ({ onSuccess }: { onSuccess: () => void }) => {
           }
         };
 
-        // Create a Promise to handle upload success or failure
         const uploadPromise = new Promise<{ url: string }>(
           (resolve, reject) => {
             xhr.onload = () => {
@@ -74,14 +72,11 @@ export const StudioUploader = ({ onSuccess }: { onSuccess: () => void }) => {
           }
         );
 
-        // Start the upload
         xhr.open("POST", "/api/upload");
         xhr.send(formData);
 
-        // Wait for the upload to complete
         const response = await uploadPromise;
 
-        // Replace the save video logic with the mutation
         saveVideo(
           { videoUrl: response.url, duration: duration },
           {
@@ -105,25 +100,27 @@ export const StudioUploader = ({ onSuccess }: { onSuccess: () => void }) => {
         setProgress(0);
         toast.error("Failed to upload video");
       }
-    };
+    },
+    [saveVideo, onSuccess]
+  );
 
-    const handleDrop = useCallback(
-      async (e: React.DragEvent) => {
-        e.preventDefault();
-        setIsDragging(false);
-        const files = Array.from(e.dataTransfer.files);
-        await handleUpload(files);
-      },
-      [handleUpload]
-    );
+  const handleDrop = useCallback(
+    async (e: React.DragEvent) => {
+      e.preventDefault();
+      setIsDragging(false);
+      const files = Array.from(e.dataTransfer.files);
+      await handleUpload(files);
+    },
+    [handleUpload]
+  );
 
-    const handleFileSelect = useCallback(
-      async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const files = Array.from(e.target.files || []);
-        await handleUpload(files);
-      },
-      [handleUpload]
-    );
+  const handleFileSelect = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const files = Array.from(e.target.files || []);
+      await handleUpload(files);
+    },
+    [handleUpload]
+  );
 
   return (
     <div

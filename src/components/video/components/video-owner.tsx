@@ -18,7 +18,7 @@ interface VideoOwnerProps {
 }
 
 export const VideoOwner = ({ user, videoId }: VideoOwnerProps) => {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const userId = session?.user?.id;
   const { data: subscriberData, isLoading } = useSubscriberCount(user.id);
   const { mutate: toggleSubscription } = useToggleSubscription(user.id);
