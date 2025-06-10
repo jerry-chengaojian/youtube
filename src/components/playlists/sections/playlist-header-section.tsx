@@ -3,13 +3,36 @@
 import { Trash2Icon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useDeletePlaylist } from "@/hooks/use-playlists";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface PlaylistHeaderSectionProps {
   id?: string;
   name?: string;
 }
 
-export const PlaylistHeaderSection = ({ name }: PlaylistHeaderSectionProps) => {
+export const PlaylistHeaderSection = ({
+  id,
+  name,
+}: PlaylistHeaderSectionProps) => {
+  const router = useRouter();
+  const { mutate: deletePlaylist, isPending } = useDeletePlaylist();
+
+  const handleDelete = () => {
+    if (!id) return;
+
+    deletePlaylist(id, {
+      onSuccess: () => {
+        toast.success("Playlist deleted successfully");
+        router.push("/playlists");
+      },
+      onError: () => {
+        toast.error("Failed to delete playlist");
+      },
+    });
+  };
+
   return (
     <div className="flex justify-between items-center">
       <div>
@@ -22,7 +45,8 @@ export const PlaylistHeaderSection = ({ name }: PlaylistHeaderSectionProps) => {
         variant="outline"
         size="icon"
         className="rounded-full"
-        onClick={() => {}}
+        onClick={handleDelete}
+        disabled={isPending}
       >
         <Trash2Icon />
       </Button>

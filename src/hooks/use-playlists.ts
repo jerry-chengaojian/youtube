@@ -134,3 +134,28 @@ export function usePlaylistVideos(playlistId: string) {
     enabled: !!playlistId,
   });
 }
+
+export function useDeletePlaylist() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (playlistId: string) => {
+      const response = await fetch(`/api/playlists/${playlistId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete playlist");
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: playlistsQueryKey });
+      queryClient.invalidateQueries({
+        queryKey: ["videoPlaylists"],
+        exact: false,
+      });
+    },
+  });
+}
