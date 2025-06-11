@@ -5,6 +5,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 interface SubscriberCountResponse {
   count: number;
   isSubscribed: boolean;
+  userName: string;
+  videoCount: number;
 }
 
 export function useSubscriberCount(userId: string) {

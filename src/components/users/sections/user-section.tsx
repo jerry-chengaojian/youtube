@@ -10,7 +10,7 @@ export const UserSection = ({ userId }: UserSectionProps) => {
   return (
     <div className="flex flex-col">
       <UserPageBanner />
-      <UserPageInfo />
+      <UserPageInfo userId={userId} />
       <Separator />
     </div>
   );

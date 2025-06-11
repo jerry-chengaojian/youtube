@@ -10,11 +10,26 @@ export async function GET(
   const session = await auth();
 
   try {
-    const count = await prisma.subscription.count({
-      where: {
-        creatorId: userId,
-      },
-    });
+    const [count, user, videoCount] = await Promise.all([
+      prisma.subscription.count({
+        where: {
+          creatorId: userId,
+        },
+      }),
+      prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+        select: {
+          name: true,
+        },
+      }),
+      prisma.video.count({
+        where: {
+          userId: userId,
+        },
+      }),
+    ]);
 
     const isSubscribed = session?.user?.id
       ? await prisma.subscription.findUnique({
@@ -30,6 +45,8 @@ export async function GET(
     return NextResponse.json({
       count,
       isSubscribed: !!isSubscribed,
+      userName: user?.name,
+      videoCount,
     });
   } catch (error) {
     console.error("[SUBSCRIBER_COUNT_GET]", error);

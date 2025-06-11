@@ -4,25 +4,18 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { UserAvatar } from "@/components/ui/user-avatar";
+import { useSubscriberCount } from "@/hooks/use-subscribers";
 
-interface UserPageInfoProps {
-  user: {
-    id: string;
-    name: string;
-    imageUrl: string;
-    subscriberCount: number;
-    videoCount: number;
-  };
-}
+export const UserPageInfo = ({ userId }: { userId: string }) => {
+  const { data, isLoading, error } = useSubscriberCount(userId);
 
-export const UserPageInfo = () => {
-  const mockUser = {
-    id: "123",
-    name: "Mock User",
-    imageUrl: "",
-    subscriberCount: 1000,
-    videoCount: 50,
-  };
+  if (isLoading) {
+    return <UserPageInfoSkeleton />;
+  }
+
+  if (error || !data) {
+    return <div>Error loading user info</div>;
+  }
 
   return (
     <div className="py-6">
@@ -31,17 +24,17 @@ export const UserPageInfo = () => {
         <div className="flex items-center gap-3">
           <UserAvatar
             size="lg"
-            imageUrl={mockUser.imageUrl}
-            name={mockUser.name}
+            name={data.userName}
             className="h-[60px] w-[60px]"
             onClick={() => {}}
+            imageUrl={"/avatar.jpg"}
           />
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-bold">{mockUser.name}</h1>
+            <h1 className="text-xl font-bold">{data.userName}</h1>
             <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
-              <span>{mockUser.subscriberCount} subscribers</span>
+              <span>{data.count} subscribers</span>
               <span>&bull;</span>
-              <span>{mockUser.videoCount} videos</span>
+              <span>{data.videoCount} videos</span>
             </div>
           </div>
         </div>
@@ -59,18 +52,18 @@ export const UserPageInfo = () => {
       {/* Desktop layout */}
       <div className="hidden md:flex items-start gap-4">
         <UserAvatar
+          imageUrl={"/avatar.jpg"}
           size="xl"
-          imageUrl={mockUser.imageUrl}
-          name={mockUser.name}
+          name={data.userName}
           className="cursor-pointer hover:opacity-80 transition-opacity duration-300"
           onClick={() => {}}
         />
         <div className="flex-1 min-w-0">
-          <h1 className="text-4xl font-bold">{mockUser.name}</h1>
+          <h1 className="text-4xl font-bold">{data.userName}</h1>
           <div className="flex items-center gap-1 text-sm text-muted-foreground mt-3">
-            <span>{mockUser.subscriberCount} subscribers</span>
+            <span>{data.count} subscribers</span>
             <span>&bull;</span>
-            <span>{mockUser.videoCount} videos</span>
+            <span>{data.videoCount} videos</span>
           </div>
           <Button variant="secondary" asChild className="mt-3 rounded-full">
             <Link prefetch href="/studio">
