@@ -5,9 +5,28 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { UserAvatar } from "@/components/ui/user-avatar";
 import { useSubscriberCount } from "@/hooks/use-subscribers";
+import { useSession } from "next-auth/react";
+import { toast } from "sonner";
+import { useToggleSubscription } from "@/hooks/use-subscribers";
+import { SubscriptionButton } from "@/components/video/components/subscription-button";
 
 export const UserPageInfo = ({ userId }: { userId: string }) => {
+  const { data: session } = useSession();
   const { data, isLoading, error } = useSubscriberCount(userId);
+  const { mutate: toggleSubscription } = useToggleSubscription(userId);
+
+  const handleSubscription = () => {
+    toggleSubscription(data?.isSubscribed || false, {
+      onSuccess: () => {
+        toast.success(
+          data?.isSubscribed ? "You have unsubscribed" : "You have subscribed"
+        );
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    });
+  };
 
   if (isLoading) {
     return <UserPageInfoSkeleton />;
@@ -38,15 +57,24 @@ export const UserPageInfo = ({ userId }: { userId: string }) => {
             </div>
           </div>
         </div>
-        <Button
-          variant="secondary"
-          asChild
-          className="w-full mt-3 rounded-full"
-        >
-          <Link prefetch href="/studio">
-            Go to studio
-          </Link>
-        </Button>
+        {session?.user?.id === userId ? (
+          <Button
+            variant="secondary"
+            asChild
+            className="w-full mt-3 rounded-full"
+          >
+            <Link prefetch href="/studios">
+              Go to studio
+            </Link>
+          </Button>
+        ) : (
+          <SubscriptionButton
+            onClick={handleSubscription}
+            disabled={isLoading}
+            isSubscribed={data?.isSubscribed || false}
+            className="flex-none"
+          />
+        )}
       </div>
 
       {/* Desktop layout */}
@@ -60,16 +88,25 @@ export const UserPageInfo = ({ userId }: { userId: string }) => {
         />
         <div className="flex-1 min-w-0">
           <h1 className="text-4xl font-bold">{data.userName}</h1>
-          <div className="flex items-center gap-1 text-sm text-muted-foreground mt-3">
+          <div className="flex items-center gap-1 text-sm text-muted-foreground mt-3 mb-3">
             <span>{data.count} subscribers</span>
             <span>&bull;</span>
             <span>{data.videoCount} videos</span>
           </div>
-          <Button variant="secondary" asChild className="mt-3 rounded-full">
-            <Link prefetch href="/studio">
-              Go to studio
-            </Link>
-          </Button>
+          {session?.user?.id === userId ? (
+            <Button variant="secondary" asChild className="rounded-full">
+              <Link prefetch href="/studios">
+                Go to studio
+              </Link>
+            </Button>
+          ) : (
+            <SubscriptionButton
+              onClick={handleSubscription}
+              disabled={isLoading}
+              isSubscribed={data?.isSubscribed || false}
+              className="flex-none"
+            />
+          )}
         </div>
       </div>
     </div>
