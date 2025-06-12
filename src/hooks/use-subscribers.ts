@@ -7,6 +7,7 @@ interface SubscriberCountResponse {
   isSubscribed: boolean;
   userName: string;
   videoCount: number;
+  avatarUrl?: string;
 }
 
 export function useSubscriberCount(userId: string) {

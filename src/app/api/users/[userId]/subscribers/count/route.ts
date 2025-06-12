@@ -22,6 +22,7 @@ export async function GET(
         },
         select: {
           name: true,
+          avatarUrl: true,
         },
       }),
       prisma.video.count({
@@ -47,6 +48,7 @@ export async function GET(
       isSubscribed: !!isSubscribed,
       userName: user?.name,
       videoCount,
+      avatarUrl: user?.avatarUrl,
     });
   } catch (error) {
     console.error("[SUBSCRIBER_COUNT_GET]", error);
