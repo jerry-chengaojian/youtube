@@ -34,7 +34,7 @@ export const StudioSidebarHeader = () => {
         <SidebarMenuButton tooltip="Your profile" asChild>
           <Link prefetch href="/users/current">
             <UserAvatar
-              imageUrl={user.image ?? "/avatar.jpg"}
+              imageUrl={user.image ?? "/avatar.svg"}
               name={user.name ?? "User"}
               size="xs"
             />
@@ -49,7 +49,7 @@ export const StudioSidebarHeader = () => {
     <SidebarHeader className="flex items-center justify-center pb-4">
       <Link prefetch href="/users/current">
         <UserAvatar
-          imageUrl={user.image ?? "/avatar.jpg"}
+          imageUrl={user.image ?? "/avatar.svg"}
           name={user.name ?? "User"}
           className="size-[112px] hover:opacity-80 transition-opacity"
         />

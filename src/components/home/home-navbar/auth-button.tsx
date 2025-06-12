@@ -31,7 +31,7 @@ export const AuthButton = () => {
               className="rounded-full p-0 hover:bg-transparent"
             >
               <Avatar className="size-10 border-2 border-white">
-                <AvatarImage src="/avatar.jpg" />
+                <AvatarImage src="/avatar.svg" />
                 <AvatarFallback className="bg-gray-300 text-gray-700 text-lg">
                   {session?.user?.name?.charAt(0).toUpperCase()}
                 </AvatarFallback>

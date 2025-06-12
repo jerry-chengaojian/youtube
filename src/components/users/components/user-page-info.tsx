@@ -74,7 +74,7 @@ export const UserPageInfo = ({ userId }: { userId: string }) => {
               name={data.userName}
               className="h-[60px] w-[60px]"
               onClick={() => {}}
-              imageUrl={data.avatarUrl ?? "/avatar.jpg"}
+              imageUrl={data.avatarUrl ?? "/avatar.svg"}
             />
             {userId === session?.user?.id && (
               <DropdownMenu>
@@ -144,7 +144,7 @@ export const UserPageInfo = ({ userId }: { userId: string }) => {
             name={data.userName}
             className="h-[60px] w-[60px]"
             onClick={() => {}}
-            imageUrl={data.avatarUrl ?? "/avatar.jpg"}
+            imageUrl={data.avatarUrl ?? "/avatar.svg"}
           />
           {userId === session?.user?.id && (
             <DropdownMenu>

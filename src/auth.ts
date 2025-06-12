@@ -39,6 +39,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           id: user.id.toString(), // Ensure ID is a string
           name: user.name,
           email: user.email,
+          image: user.avatarUrl,
         }; // Cast to User type
       },
     }),
@@ -50,12 +51,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.image = user.image;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
+        session.user.image = token.image as string;
       }
       return session;
     },

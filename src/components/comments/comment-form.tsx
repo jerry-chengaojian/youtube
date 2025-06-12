@@ -74,7 +74,7 @@ export const CommentForm = ({
       >
         <UserAvatar
           size="lg"
-          imageUrl={session?.user?.image || "/avatar.jpg"}
+          imageUrl={session?.user?.image || "/avatar.svg"}
           name={session?.user?.name || "User"}
           className="mt-2"
         />

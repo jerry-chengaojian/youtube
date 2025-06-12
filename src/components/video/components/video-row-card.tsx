@@ -132,7 +132,7 @@ export const VideoRowCard = ({
                 <div className="flex items-center gap-2 my-3">
                   <UserAvatar
                     size="sm"
-                    imageUrl={"/avatar.jpg"}
+                    imageUrl={"/avatar.svg"}
                     name={data.user.name}
                   />
                   <UserInfo size="sm" name={data.user.name} />
