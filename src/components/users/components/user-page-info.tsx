@@ -9,11 +9,27 @@ import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { useToggleSubscription } from "@/hooks/use-subscribers";
 import { SubscriptionButton } from "@/components/video/components/subscription-button";
+import { useState } from "react";
+import { MoreVerticalIcon, ImagePlusIcon } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { ThumbnailUploader } from "@/components/studio/thumbnail-uploader";
 
 export const UserPageInfo = ({ userId }: { userId: string }) => {
   const { data: session } = useSession();
   const { data, isLoading, error } = useSubscriberCount(userId);
   const { mutate: toggleSubscription } = useToggleSubscription(userId);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+
+  const handleAvatarUpload = (url: string) => {
+    console.log(url);
+    setIsUploadModalOpen(false);
+  };
 
   const handleSubscription = () => {
     toggleSubscription(data?.isSubscribed || false, {
@@ -41,13 +57,34 @@ export const UserPageInfo = ({ userId }: { userId: string }) => {
       {/* Mobile layout */}
       <div className="flex flex-col md:hidden">
         <div className="flex items-center gap-3">
-          <UserAvatar
-            size="lg"
-            name={data.userName}
-            className="h-[60px] w-[60px]"
-            onClick={() => {}}
-            imageUrl={"/avatar.jpg"}
-          />
+          <div className="relative group">
+            <UserAvatar
+              size="lg"
+              name={data.userName}
+              className="h-[60px] w-[60px]"
+              onClick={() => {}}
+              imageUrl={"/avatar.jpg"}
+            />
+            {userId === session?.user?.id && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    type="button"
+                    size="icon"
+                    className="bg-black/50 hover:bg-black/50 absolute top-0 right-0 rounded-full opacity-100 md:opacity-0 group-hover:opacity-100 duration-300 size-7"
+                  >
+                    <MoreVerticalIcon className="text-white" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" side="right">
+                  <DropdownMenuItem onClick={() => setIsUploadModalOpen(true)}>
+                    <ImagePlusIcon className="size-4 mr-1" />
+                    upload avatar
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+          </div>
           <div className="flex-1 min-w-0">
             <h1 className="text-xl font-bold">{data.userName}</h1>
             <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
@@ -57,6 +94,17 @@ export const UserPageInfo = ({ userId }: { userId: string }) => {
             </div>
           </div>
         </div>
+
+        <ResponsiveModal
+          open={isUploadModalOpen}
+          onOpenChange={setIsUploadModalOpen}
+          title="upload avatar"
+        >
+          <ThumbnailUploader
+            onSuccess={handleAvatarUpload}
+            onClose={() => setIsUploadModalOpen(false)}
+          />
+        </ResponsiveModal>
         {session?.user?.id === userId ? (
           <Button
             variant="secondary"
@@ -79,13 +127,34 @@ export const UserPageInfo = ({ userId }: { userId: string }) => {
 
       {/* Desktop layout */}
       <div className="hidden md:flex items-start gap-4">
-        <UserAvatar
-          imageUrl={"/avatar.jpg"}
-          size="xl"
-          name={data.userName}
-          className="cursor-pointer hover:opacity-80 transition-opacity duration-300"
-          onClick={() => {}}
-        />
+        <div className="relative group">
+          <UserAvatar
+            size="lg"
+            name={data.userName}
+            className="h-[60px] w-[60px]"
+            onClick={() => {}}
+            imageUrl={"/avatar.jpg"}
+          />
+          {userId === session?.user?.id && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  type="button"
+                  size="icon"
+                  className="bg-black/50 hover:bg-black/50 absolute top-0 right-0 rounded-full opacity-100 md:opacity-0 group-hover:opacity-100 duration-300 size-7"
+                >
+                  <MoreVerticalIcon className="text-white" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" side="right">
+                <DropdownMenuItem onClick={() => setIsUploadModalOpen(true)}>
+                  <ImagePlusIcon className="size-4 mr-1" />
+                  upload avatar
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+        </div>
         <div className="flex-1 min-w-0">
           <h1 className="text-4xl font-bold">{data.userName}</h1>
           <div className="flex items-center gap-1 text-sm text-muted-foreground mt-3 mb-3">
