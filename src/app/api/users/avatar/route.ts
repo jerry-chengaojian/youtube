@@ -14,9 +14,15 @@ export async function PATCH(request: Request) {
     const user = await prisma.user.update({
       where: { id: session.user.id },
       data: { avatarUrl },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        avatarUrl: true,
+      },
     });
 
-    return NextResponse.json({ avatarUrl: user.avatarUrl });
+    return NextResponse.json(user);
   } catch (error) {
     return NextResponse.json(
       { error: "Failed to update avatar" },
