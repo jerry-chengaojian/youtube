@@ -31,7 +31,7 @@ export const AuthButton = () => {
               className="rounded-full p-0 hover:bg-transparent"
             >
               <Avatar className="size-10 border-2 border-white">
-                <AvatarImage src="/avatar.svg" />
+                <AvatarImage src={session?.user?.image ?? "/avatar.svg"} />
                 <AvatarFallback className="bg-gray-300 text-gray-700 text-lg">
                   {session?.user?.name?.charAt(0).toUpperCase()}
                 </AvatarFallback>
@@ -39,7 +39,9 @@ export const AuthButton = () => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => router.push(`/users/${session?.user?.id}`)}
+            >
               <UserIcon className="mr-2 size-4" />
               <span>My profile</span>
             </DropdownMenuItem>

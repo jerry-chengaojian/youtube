@@ -22,7 +22,7 @@ import { ThumbnailUploader } from "@/components/studio/thumbnail-uploader";
 import { useUpdateAvatar } from "@/hooks/use-users";
 
 export const UserPageInfo = ({ userId }: { userId: string }) => {
-  const { data: session } = useSession();
+  const { data: session, update: updateSession } = useSession();
   const { data, isLoading, error } = useSubscriberCount(userId);
   const { mutate: toggleSubscription } = useToggleSubscription(userId);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
@@ -31,8 +31,17 @@ export const UserPageInfo = ({ userId }: { userId: string }) => {
 
   const handleAvatarUpload = (url: string) => {
     updateAvatar(url, {
-      onSuccess: () => {
+      onSuccess: async () => {
         setIsUploadModalOpen(false);
+        if (session) {
+          await updateSession({
+            ...session,
+            user: {
+              ...session?.user,
+              image: url,
+            },
+          });
+        }
         toast.success("Avatar updated successfully");
       },
       onError: (error) => {

@@ -48,11 +48,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   //   signIn: "/login", // Customize this to your login page path
   // },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id;
         token.image = user.image;
       }
+      if (trigger === "update" && session?.user) {
+        token.image = session.user.image;
+      }
+
       return token;
     },
     async session({ session, token }) {
