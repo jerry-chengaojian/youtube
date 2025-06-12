@@ -23,9 +23,8 @@ export function useUpdateAvatar() {
   return useMutation({
     mutationFn: updateAvatar,
     onSuccess: (data) => {
-      // 更新成功后使相关查询失效
       queryClient.invalidateQueries({
-        queryKey: ["user", data.id],
+        queryKey: ["subscriber-count", data.id],
       });
     },
   });

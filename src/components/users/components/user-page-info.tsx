@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { ThumbnailUploader } from "@/components/studio/thumbnail-uploader";
+import { useUpdateAvatar } from "@/hooks/use-users";
 
 export const UserPageInfo = ({ userId }: { userId: string }) => {
   const { data: session } = useSession();
@@ -26,9 +27,19 @@ export const UserPageInfo = ({ userId }: { userId: string }) => {
   const { mutate: toggleSubscription } = useToggleSubscription(userId);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
+  const { mutate: updateAvatar } = useUpdateAvatar();
+
   const handleAvatarUpload = (url: string) => {
-    console.log(url);
-    setIsUploadModalOpen(false);
+    updateAvatar(url, {
+      onSuccess: () => {
+        setIsUploadModalOpen(false);
+        toast.success("Avatar updated successfully");
+      },
+      onError: (error) => {
+        console.error("Failed to update avatar:", error);
+        toast.error("Failed to update avatar");
+      },
+    });
   };
 
   const handleSubscription = () => {
