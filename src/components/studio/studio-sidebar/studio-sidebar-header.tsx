@@ -47,7 +47,7 @@ export const StudioSidebarHeader = () => {
 
   return (
     <SidebarHeader className="flex items-center justify-center pb-4">
-      <Link prefetch href="/users/current">
+      <Link prefetch href={`/users/${user?.id}`}>
         <UserAvatar
           imageUrl={user.image ?? "/avatar.svg"}
           name={user.name ?? "User"}

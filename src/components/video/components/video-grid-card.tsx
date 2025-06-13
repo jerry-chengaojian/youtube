@@ -58,7 +58,10 @@ export const VideoGridCard = ({ data, onRemove }: VideoGridCardProps) => {
       </Link>
       <div className="flex gap-3">
         <Link prefetch href={`/users/${data.user.id}`}>
-          <UserAvatar imageUrl={"/avatar.svg"} name={data.user.name} />
+          <UserAvatar
+            imageUrl={data.user.avatarUrl ?? "/avatar.svg"}
+            name={data.user.name}
+          />
         </Link>
         <div className="min-w-0 flex-1">
           <Link prefetch href={`/videos/${data.id}`}>
