@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { useToggleSubscription } from "@/hooks/use-subscribers";
 import { SubscriptionButton } from "@/components/video/components/subscription-button";
 import { useState } from "react";
-import { MoreVerticalIcon, ImagePlusIcon } from "lucide-react";
+import { MoreVerticalIcon, ImagePlusIcon, Edit2Icon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -86,23 +86,14 @@ export const UserPageInfo = ({ userId }: { userId: string }) => {
               imageUrl={data.avatarUrl ?? "/avatar.svg"}
             />
             {userId === session?.user?.id && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    type="button"
-                    size="icon"
-                    className="bg-black/50 hover:bg-black/50 absolute top-0 right-0 rounded-full opacity-100 md:opacity-0 group-hover:opacity-100 duration-300 size-7"
-                  >
-                    <MoreVerticalIcon className="text-white" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" side="right">
-                  <DropdownMenuItem onClick={() => setIsUploadModalOpen(true)}>
-                    <ImagePlusIcon className="size-4 mr-1" />
-                    upload avatar
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <Button
+                onClick={() => setIsUploadModalOpen(true)}
+                type="button"
+                size="icon"
+                className="bg-black/50 hover:bg-black/50 absolute top-0 right-0 rounded-full opacity-100 md:opacity-0 group-hover:opacity-100 duration-300 size-7"
+              >
+                <Edit2Icon className="size-4 text-white" />
+              </Button>
             )}
           </div>
           <div className="flex-1 min-w-0">
@@ -156,23 +147,14 @@ export const UserPageInfo = ({ userId }: { userId: string }) => {
             imageUrl={data.avatarUrl ?? "/avatar.svg"}
           />
           {userId === session?.user?.id && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  type="button"
-                  size="icon"
-                  className="bg-black/50 hover:bg-black/50 absolute top-0 right-0 rounded-full opacity-100 md:opacity-0 group-hover:opacity-100 duration-300 size-7"
-                >
-                  <MoreVerticalIcon className="text-white" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" side="right">
-                <DropdownMenuItem onClick={() => setIsUploadModalOpen(true)}>
-                  <ImagePlusIcon className="size-4 mr-1" />
-                  upload avatar
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Button
+              onClick={() => setIsUploadModalOpen(true)}
+              type="button"
+              size="icon"
+              className="bg-black/50 hover:bg-black/50 absolute top-0 right-0 rounded-full opacity-100 md:opacity-0 group-hover:opacity-100 duration-300 size-7"
+            >
+              <Edit2Icon className="size-4 text-white" />
+            </Button>
           )}
         </div>
         <div className="flex-1 min-w-0">
