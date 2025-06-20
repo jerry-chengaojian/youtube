@@ -103,7 +103,7 @@ export const FormSection = ({ videoId }: FormSectionProps) => {
     deleteVideo(undefined, {
       onSuccess: () => {
         toast.success("Video deleted successfully");
-        router.push("/studio");
+        router.push("/studios");
       },
       onError: (error) => {
         console.error("Delete error:", error);
