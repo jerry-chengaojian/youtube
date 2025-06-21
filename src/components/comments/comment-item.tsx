@@ -102,7 +102,7 @@ export const CommentItem = ({
         <Link prefetch href={`/users/${comment.userId}`}>
           <UserAvatar
             size={variant === "comment" ? "lg" : "sm"}
-            imageUrl={"/avatar.svg"}
+            imageUrl={comment.user.avatarUrl || "/avatar.svg"}
             name={comment.user.name}
           />
         </Link>
