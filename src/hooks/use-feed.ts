@@ -6,8 +6,11 @@ import {
 import { DEFAULT_LIMIT } from "@/constants";
 import { Video } from "./use-videos";
 
-export const videosQueryKey = (categoryId?: string, search?: string) =>
-  ["videos", categoryId, search] as const;
+export const videosQueryKey = (
+  categoryId?: string,
+  search?: string,
+  userId?: string
+) => ["videos", categoryId, search, userId] as const;
 
 type VideosResponse = {
   items: Video[];
@@ -19,7 +22,8 @@ type PageParam = { id: string; updatedAt: string } | undefined;
 async function getVideos(
   pageParam?: PageParam,
   categoryId?: string,
-  search?: string
+  search?: string,
+  userId?: string
 ): Promise<VideosResponse> {
   const params: Record<string, string> = {
     limit: String(DEFAULT_LIMIT),
@@ -30,6 +34,9 @@ async function getVideos(
   }
   if (categoryId) {
     params.categoryId = categoryId;
+  }
+  if (userId) {
+    params.userId = userId;
   }
 
   if (search) {
@@ -84,7 +91,7 @@ export function useSubscriptions() {
   });
 }
 
-export function useFeed(categoryId?: string, search?: string) {
+export function useFeed(categoryId?: string, search?: string, userId?: string) {
   return useInfiniteQuery<
     VideosResponse,
     Error,
@@ -92,8 +99,9 @@ export function useFeed(categoryId?: string, search?: string) {
     ReturnType<typeof videosQueryKey>,
     PageParam
   >({
-    queryKey: videosQueryKey(categoryId, search),
-    queryFn: ({ pageParam }) => getVideos(pageParam, categoryId, search),
+    queryKey: videosQueryKey(categoryId, search, userId),
+    queryFn: ({ pageParam }) =>
+      getVideos(pageParam, categoryId, search, userId),
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     initialPageParam: undefined,
   });

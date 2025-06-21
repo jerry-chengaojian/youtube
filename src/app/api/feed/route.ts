@@ -9,6 +9,7 @@ export async function GET(request: Request) {
     const cursor = searchParams.get("cursor");
     const categoryId = searchParams.get("categoryId");
     const search = searchParams.get("search");
+    const userId = searchParams.get("userId");
     let cursorData: { id: string; updatedAt: Date } | null = null;
 
     try {
@@ -29,6 +30,7 @@ export async function GET(request: Request) {
       where: {
         visibility: "public",
         ...(categoryId && { categoryId }),
+        ...(userId && { userId }),
         ...(search && {
           OR: [
             { title: { contains: search, mode: "insensitive" } },

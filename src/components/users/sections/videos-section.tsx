@@ -11,7 +11,7 @@ interface VideosSectionProps {
   userId: string;
 }
 
-export const VideosSection = (props: VideosSectionProps) => {
+export const VideosSection = ({ userId }: VideosSectionProps) => {
   const {
     data,
     fetchNextPage,
@@ -19,7 +19,7 @@ export const VideosSection = (props: VideosSectionProps) => {
     isFetchingNextPage,
     isLoading,
     error,
-  } = useFeed();
+  } = useFeed(undefined, undefined, userId);
 
   if (isLoading) {
     return <VideosSectionSkeleton />;
