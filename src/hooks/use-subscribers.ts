@@ -23,6 +23,19 @@ export function useSubscriberCount(userId: string) {
   });
 }
 
+export function useSubscriptions() {
+  return useQuery({
+    queryKey: ["subscriptions"],
+    queryFn: async () => {
+      const response = await fetch("/api/subscriptions");
+      if (!response.ok) {
+        throw new Error("Failed to fetch subscriptions");
+      }
+      return response.json();
+    },
+  });
+}
+
 export function useToggleSubscription(userId: string) {
   const queryClient = useQueryClient();
 
@@ -40,7 +53,12 @@ export function useToggleSubscription(userId: string) {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["subscriber-count", userId] });
+      queryClient.invalidateQueries({
+        queryKey: ["subscriber-count", userId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["subscriptions"],
+      });
     },
   });
 }
