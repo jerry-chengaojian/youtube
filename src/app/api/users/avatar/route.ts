@@ -24,6 +24,7 @@ export async function PATCH(request: Request) {
 
     return NextResponse.json(user);
   } catch (error) {
+    console.error("Failed to update avatar:", error);
     return NextResponse.json(
       { error: "Failed to update avatar" },
       { status: 500 }

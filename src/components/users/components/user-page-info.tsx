@@ -10,13 +10,7 @@ import { toast } from "sonner";
 import { useToggleSubscription } from "@/hooks/use-subscribers";
 import { SubscriptionButton } from "@/components/video/components/subscription-button";
 import { useState } from "react";
-import { MoreVerticalIcon, ImagePlusIcon, Edit2Icon } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Edit2Icon } from "lucide-react";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { ThumbnailUploader } from "@/components/studio/thumbnail-uploader";
 import { useUpdateAvatar } from "@/hooks/use-users";
