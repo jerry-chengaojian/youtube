@@ -1,11 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { toast } from "sonner";
-import {
-  useSubscriptions,
-  useToggleSubscription,
-} from "@/hooks/use-subscribers";
+import { useSubscriptions } from "@/hooks/use-subscribers";
 import {
   SubscriptionItem,
   SubscriptionItemSkeleton,
@@ -38,8 +34,7 @@ export const SubscriptionsSection = () => {
             name={subscription.creator.name}
             imageUrl={subscription.creator.avatarUrl || "/avatar.svg"}
             subscriberCount={subscription.creator.subscriberCount}
-            onUnsubscribe={() => {}}
-            disabled={false}
+            userId={subscription.creatorId}
           />
         </Link>
       ))}

@@ -1,13 +1,14 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { SubscriptionButton } from "./subscription-button";
 import { UserAvatar } from "@/components/ui/user-avatar";
+import { useToggleSubscription } from "@/hooks/use-subscribers";
+import { toast } from "sonner";
 
 interface SubscriptionItemProps {
   name: string;
   imageUrl: string;
   subscriberCount: number;
-  onUnsubscribe: () => void;
-  disabled: boolean;
+  userId: string;
 }
 
 export const SubscriptionItemSkeleton = () => {
@@ -33,9 +34,22 @@ export const SubscriptionItem = ({
   name,
   imageUrl,
   subscriberCount,
-  onUnsubscribe,
-  disabled,
+  userId,
 }: SubscriptionItemProps) => {
+  const { mutate: toggleSubscription, isPending } =
+    useToggleSubscription(userId);
+
+  const handleSubscription = () => {
+    toggleSubscription(true, {
+      onSuccess: () => {
+        toast.success("You have subscribed");
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    });
+  };
+
   return (
     <div className="flex items-start gap-4">
       <UserAvatar size="lg" imageUrl={imageUrl} name={name} />
@@ -51,12 +65,9 @@ export const SubscriptionItem = ({
 
           <SubscriptionButton
             size="sm"
-            onClick={(e) => {
-              e.preventDefault();
-              onUnsubscribe();
-            }}
-            disabled={disabled}
-            isSubscribed
+            onClick={handleSubscription}
+            disabled={isPending}
+            isSubscribed={true}
           />
         </div>
       </div>
