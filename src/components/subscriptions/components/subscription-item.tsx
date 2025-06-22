@@ -39,7 +39,8 @@ export const SubscriptionItem = ({
   const { mutate: toggleSubscription, isPending } =
     useToggleSubscription(userId);
 
-  const handleSubscription = () => {
+  const handleSubscription = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     toggleSubscription(true, {
       onSuccess: () => {
         toast.success("You have subscribed");
