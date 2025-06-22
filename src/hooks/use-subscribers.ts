@@ -1,5 +1,6 @@
 "use client";
 
+import { User } from "@prisma/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface SubscriberCountResponse {
@@ -23,8 +24,14 @@ export function useSubscriberCount(userId: string) {
   });
 }
 
+type Subscription = {
+  creatorId: string;
+  viewerId: string;
+  user: User;
+};
+
 export function useSubscriptions() {
-  return useQuery({
+  return useQuery<Subscription[]>({
     queryKey: ["subscriptions"],
     queryFn: async () => {
       const response = await fetch("/api/subscriptions");
