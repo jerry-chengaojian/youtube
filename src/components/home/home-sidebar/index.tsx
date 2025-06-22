@@ -3,8 +3,11 @@ import { Sidebar, SidebarContent } from "@/components/ui/sidebar";
 import { MainSection } from "./main-section";
 import { PersonalSection } from "./personal-section";
 import { SubscriptionsSection } from "./subscriptions-section";
+import { auth } from "@/auth";
 
-export const HomeSidebar = () => {
+export async function HomeSidebar() {
+  const session = await auth();
+
   return (
     <Sidebar className="pt-16 z-40 border-none" collapsible="icon">
       <SidebarContent className="bg-background">
@@ -12,8 +15,8 @@ export const HomeSidebar = () => {
         <Separator />
         <PersonalSection />
         <Separator />
-        <SubscriptionsSection />
+        {session && <SubscriptionsSection />}
       </SidebarContent>
     </Sidebar>
   );
-};
+}
