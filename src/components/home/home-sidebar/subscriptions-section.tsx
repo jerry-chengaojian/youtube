@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/sidebar";
 import { UserAvatar } from "@/components/ui/user-avatar";
 import { useSubscriptions } from "@/hooks/use-subscribers";
+import { ListIcon } from "lucide-react";
 
 export const LoadingSkeleton = () => {
   return (
@@ -77,6 +78,23 @@ export const SubscriptionsSection = () => {
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
+          {!isLoading && (
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname === "/subscriptions"}
+              >
+                <Link
+                  prefetch
+                  href="/subscriptions"
+                  className="flex items-center gap-4"
+                >
+                  <ListIcon className="size-4" />
+                  <span className="text-sm">All subscriptions</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>

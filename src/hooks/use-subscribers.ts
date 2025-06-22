@@ -27,7 +27,7 @@ export function useSubscriberCount(userId: string) {
 type Subscription = {
   creatorId: string;
   viewerId: string;
-  creator: User;
+  creator: User & { subscriberCount: number };
 };
 
 export function useSubscriptions() {

@@ -22,6 +22,11 @@ export async function GET() {
           avatarUrl: true,
           createdAt: true,
           updatedAt: true,
+          _count: {
+            select: {
+              subscribers: true,
+            },
+          },
         },
       },
     },
@@ -30,5 +35,13 @@ export async function GET() {
     },
   });
 
-  return NextResponse.json(subscriptions);
+  return NextResponse.json(
+    subscriptions.map((sub) => ({
+      ...sub,
+      creator: {
+        ...sub.creator,
+        subscriberCount: sub.creator._count?.subscribers || 0,
+      },
+    }))
+  );
 }
