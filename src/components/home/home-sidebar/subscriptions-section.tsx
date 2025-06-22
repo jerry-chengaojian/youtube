@@ -58,21 +58,21 @@ export const SubscriptionsSection = () => {
                 key={`${subscription.creatorId}-${subscription.viewerId}`}
               >
                 <SidebarMenuButton
-                  tooltip={subscription.user.name}
+                  tooltip={subscription.creator.name}
                   asChild
-                  isActive={pathname === `/users/${subscription.user.id}`}
+                  isActive={pathname === `/users/${subscription.creatorId}`}
                 >
                   <Link
                     prefetch
-                    href={`/users/${subscription.user.id}`}
+                    href={`/users/${subscription.creatorId}`}
                     className="flex items-center gap-4"
                   >
                     <UserAvatar
                       size="xs"
-                      imageUrl={subscription.user.avatarUrl || "/avatar.svg"}
-                      name={subscription.user.name}
+                      imageUrl={subscription.creator.avatarUrl || "/avatar.svg"}
+                      name={subscription.creator.name}
                     />
-                    <span className="text-sm">{subscription.user.name}</span>
+                    <span className="text-sm">{subscription.creator.name}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
