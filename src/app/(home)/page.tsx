@@ -1,4 +1,17 @@
 import { HomeView } from "@/components/home/views/home-view";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "YouTube Clone",
+  description: "Watch and share your favorite videos",
+  openGraph: {
+    title: "YouTube Clone",
+    description: "Watch and share your favorite videos",
+    siteName: "YouTube Clone",
+    locale: "en_US",
+    type: "website",
+  },
+};
 
 interface PageProps {
   searchParams: Promise<{
