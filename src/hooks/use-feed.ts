@@ -53,7 +53,7 @@ async function getVideos(
   return response.json();
 }
 
-export const subscriptionsQueryKey = () => ["subscriptions"] as const;
+export const subscriptionsQueryKey = () => ["feed-subscriptions"] as const;
 
 async function getSubscriptions(
   pageParam?: PageParam
@@ -88,6 +88,7 @@ export function useSubscriptions() {
     queryFn: ({ pageParam }) => getSubscriptions(pageParam),
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     initialPageParam: undefined,
+    staleTime: 0,
   });
 }
 
@@ -104,6 +105,7 @@ export function useFeed(categoryId?: string, search?: string, userId?: string) {
       getVideos(pageParam, categoryId, search, userId),
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     initialPageParam: undefined,
+    staleTime: 0,
   });
 }
 
@@ -123,5 +125,6 @@ export function useTrending() {
   return useQuery<Video[], Error>({
     queryKey: trendingQueryKey(),
     queryFn: getTrending,
+    staleTime: 0,
   });
 }
