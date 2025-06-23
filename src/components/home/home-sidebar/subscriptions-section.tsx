@@ -54,7 +54,7 @@ export const SubscriptionsSection = () => {
         <SidebarMenu>
           {isLoading && <LoadingSkeleton />}
           {!isLoading &&
-            data?.map((subscription) => (
+            data?.slice(0, 5).map((subscription) => (
               <SidebarMenuItem
                 key={`${subscription.creatorId}-${subscription.viewerId}`}
               >
