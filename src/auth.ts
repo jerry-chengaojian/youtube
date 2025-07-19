@@ -55,6 +55,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (!user) {
           user = await prisma.user.create({
             data: {
+              id: profile.id,
               email: profile.email,
               name: profile.name || profile.email.split("@")[0],
               password: "", // For Google login, password can be empty
