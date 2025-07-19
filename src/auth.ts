@@ -53,6 +53,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         // If user doesn't exist, create new user
         if (!user) {
+          console.log("profile", profile);
+          // console every item of profile
+          Object.keys(profile).forEach((key) => {
+            console.log(key, profile[key]);
+          });
           user = await prisma.user.create({
             data: {
               id: profile.id,
@@ -62,6 +67,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               avatarUrl: profile.picture,
             },
           });
+          console.log("user", user);
+          // console every item of user
+          console.log("userId", user.id);
         }
 
         // Return user info
