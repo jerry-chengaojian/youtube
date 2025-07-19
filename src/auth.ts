@@ -44,7 +44,34 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }; // Cast to User type
       },
     }),
-    Google,
+    Google({
+      async profile(profile) {
+        // Try to find existing user by email
+        let user = await prisma.user.findUnique({
+          where: { email: profile.email },
+        });
+
+        // If user doesn't exist, create new user
+        if (!user) {
+          user = await prisma.user.create({
+            data: {
+              email: profile.email,
+              name: profile.name || profile.email.split("@")[0],
+              password: "", // For Google login, password can be empty
+              avatarUrl: profile.picture,
+            },
+          });
+        }
+
+        // Return user info
+        return {
+          id: user.id.toString(),
+          name: user.name,
+          email: user.email,
+          image: user.avatarUrl,
+        };
+      },
+    }),
   ],
   // pages: {
   //   signIn: "/login", // Customize this to your login page path
