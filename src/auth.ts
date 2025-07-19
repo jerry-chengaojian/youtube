@@ -80,10 +80,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   //   signIn: "/login", // Customize this to your login page path
   // },
   callbacks: {
-    async jwt({ token, user, trigger, session }) {
+    async jwt({ token, user, trigger, session, account, profile }) {
       if (user) {
         token.id = user.id;
         token.image = user.image;
+      }
+      if (account?.provider === "google" && profile) {
+        token.id = profile.sub;
       }
       if (trigger === "update" && session?.user) {
         token.image = session.user.image;
