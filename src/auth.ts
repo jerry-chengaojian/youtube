@@ -46,35 +46,29 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
     Google({
       async profile(profile) {
-        // Try to find existing user by email
+        // Try to find existing user by email or Google sub
         let user = await prisma.user.findUnique({
-          where: { email: profile.email },
+          where: {
+            email: profile.email,
+          },
         });
 
         // If user doesn't exist, create new user
         if (!user) {
-          console.log("profile", profile);
-          // console every item of profile
-          Object.keys(profile).forEach((key) => {
-            console.log(key, profile[key]);
-          });
           user = await prisma.user.create({
             data: {
-              id: profile.id,
+              id: profile.sub,
               email: profile.email,
               name: profile.name || profile.email.split("@")[0],
-              password: "", // For Google login, password can be empty
+              password: "",
               avatarUrl: profile.picture,
             },
           });
-          console.log("user", user);
-          // console every item of user
-          console.log("userId", user.id);
         }
 
         // Return user info
         return {
-          id: user.id.toString(),
+          id: user.id,
           name: user.name,
           email: user.email,
           image: user.avatarUrl,
